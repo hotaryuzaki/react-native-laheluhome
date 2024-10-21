@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+import '../gesture-handler';
+import { useEffect } from 'react';
+import 'react-native-reanimated';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { LogBox } from 'react-native';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -17,6 +22,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    LogBox.ignoreLogs(['[Reanimated] Reduced motion setting is enabled on this device']); // Ignore log notification by message
     if (loaded) {
       SplashScreen.hideAsync();
     }
@@ -27,11 +33,13 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

@@ -6,9 +6,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 
-export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
+export function Collapsible({ children, title, style }: PropsWithChildren & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const theme = useColorScheme() ?? 'light';
+  const theme = useColorScheme() ?? 'dark';
 
   return (
     <ThemedView>
@@ -16,14 +16,14 @@ export function Collapsible({ children, title }: PropsWithChildren & { title: st
         style={styles.heading}
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}>
+        <ThemedText type="defaultSemiBold">{title}</ThemedText>
         <Ionicons
           name={isOpen ? 'chevron-down' : 'chevron-forward-outline'}
-          size={18}
+          size={24}
           color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
         />
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
+      {isOpen && <ThemedView style={{ ...styles.content, ...style }}>{children}</ThemedView>}
     </ThemedView>
   );
 }
