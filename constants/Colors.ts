@@ -3,28 +3,42 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-const tintColorLight = '#65a4ec';
+// const tintColorLight = '#65a4ec';
 const tintColorDark = '#65a4ec';
+const white = '#e4e4e4'; // MAIN COLOR
+const whiteHighlight = '#ffffff';
+const black = '#1a1a1a'; // MAIN BG COLOR
+const blackHighlight = '#0c0c0c';
+const grey = '#333333';
+const orange = '#dd952a';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-    drawerMenuBgDefault: '#9BA1A6',
+    text: white,
+    textHighlight: whiteHighlight,
+    background: black,
+    backgroundMedia: grey,
+    border: blackHighlight,
+    tint: tintColorDark,
+    icon: white,
+    tabIconDefault: white,
+    tabIconSelected: tintColorDark,
+    drawerMenuBgDefault: white,
     drawerMenuBgSelected: '#65a4ec',
+    sawerBackground: orange,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: white,
+    textHighlight: whiteHighlight,
+    background: black,
+    backgroundMedia: grey,
+    border: blackHighlight,
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: white,
+    tabIconDefault: white,
     tabIconSelected: tintColorDark,
-    drawerMenuBgDefault: '#9BA1A6',
+    drawerMenuBgDefault: white,
     drawerMenuBgSelected: '#65a4ec',
+    sawerBackground: orange,
   },
 };

@@ -5,7 +5,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer' | 'tab';
 };
 
 export function ThemedText({
@@ -27,6 +27,7 @@ export function ThemedText({
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
         type === 'menuDrawer' ? styles.menuDrawer : undefined,
+        type === 'tab' ? styles.tab : undefined,
         style,
       ]}
       {...rest}
@@ -47,7 +48,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    lineHeight: 32,
   },
   subtitle: {
     fontSize: 20,
@@ -63,5 +63,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     paddingHorizontal: 5
+  },
+  tab: {
+    fontSize: 16,
+    paddingHorizontal: 5,
+    textAlign: 'center'
   },
 });

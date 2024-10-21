@@ -1,7 +1,6 @@
 import { View, type ViewProps } from 'react-native';
 import { usePathname } from 'expo-router';
 
-
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 export type ThemedViewProps = ViewProps & {

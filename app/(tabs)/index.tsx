@@ -1,66 +1,183 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import { useState } from 'react';
-import { Button, Image, StyleSheet, Platform, Text } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Button, Dimensions, StyleSheet } from 'react-native';
+import { FlashList } from "@shopify/flash-list";
+import axios from 'axios';
+import { Image } from 'expo-image';
 
 import { ThemedDrawer } from '@/components/ThemedDrawer';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { Header } from '@/components/Header';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Config } from '@/constants/Config';
+import { Colors } from '@/constants/Colors';
 
-export default function HomeScreen() {
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
+
+
+export default function HomeScreen(...rest) {
+  const [tabList, setTabList] = useState(['Home', 'Fresh', 'Trending']);
+  const [tabSelected, setTabSelected] = useState('Home');
+  const [data, setData] = useState([]);
+  const [home, setHome] = useState([]);
+  const [fresh, setFresh] = useState([]);
+  const [trending, setTrending] = useState([]);
+  const [feed, setFeed] = useState(1); // 0 = FRESH, 1 = HOME, 2 = TRENDING
+  const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState(false);
+  const ref = useRef(null); // ANIMATED FLATLIST REF
+
+  // MOUNT FUNCTIONS CALL
+  useEffect(() => {
+    _getPost(); // GET API
+  }, []); // SET EMPTY ARRAY SO USEEFFECT JUST CALL ONCE;
+
+  const _getPost = async () => {
+    try {
+      if (data?.hasMore === false) throw ('finish');
+
+      console.log(`${Config.apiUrl}/post/get-posts?feed=${feed}&page=${page}`);
+
+
+      const response = await axios.get(
+        `${Config.apiUrl}/post/get-posts?feed=${feed}&page=${page}`
+      );
+
+      if (page) {
+        if (tabSelected === 'Home')
+          setHome((prev) => {
+            return { prev, ...response.data.postInfos };
+          });
+        else if (tabSelected === 'Fresh')
+          setFresh((prev) => {
+            return { prev, ...response.data.postInfos };
+          });
+        else if (tabSelected === 'Trending')
+          setTrending((prev) => {
+            return { prev, ...response.data.postInfos };
+          });
+      }
+      else setHome(response.data.postInfos);
+
+      setData(response.data);
+    }
+    catch (e) {
+      // console.log(e);
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log('useeffect home', home);
+
+  // }, [home])
+
+
+
+  const keyExtractor = useCallback((item: string, index: number) => `${index}-${item}`, []);
+
+  const renderItem = ({ item, index, target, extraData }) => {
+    console.log('renderrr', item);
+
+    return (
+      <ThemedView style={styles.postContainer}>
+        <ThemedText>
+          hahaha
+        </ThemedText>
+
+        {
+          item.mediaType === 0 && (
+            <Image
+              style={styles.postMedia}
+              source={item.media}
+              transition={500}
+            />
+          )
+        }
+      </ThemedView>
+    );
+
+  };
+
 
   return (
     <ThemedDrawer
       open={open}
       setOpen={(value) => setOpen(value)}
+      search={search}
+      setSearch={(value) => setSearch(value)}
     >
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-        headerImage={
-          <Image
-            source={require('@/assets/images/partial-react-logo.png')}
-            style={styles.reactLogo}
-          />
-        }>
+      <Header
+        tabList={tabList}
+        tabSelected={tabSelected}
+        setTabSelected={(value) => setTabSelected(value)}
+        onPressMenu={() => setOpen((prevOpen) => !prevOpen)}
+        onPressSearch={() => setSearch((prevOpen) => !prevOpen)}
+        forwardRef={ref}
+      />
 
-        <Button
-          onPress={() => setOpen((prevOpen) => !prevOpen)}
-          title={`${open ? 'Close' : 'Open'} drawer`}
+      {
+        tabSelected === 'Home' &&
+        <FlashList
+          keyExtractor={keyExtractor}
+          numColumns={1}
+          data={home}
+          renderItem={renderItem}
+          estimatedItemSize={height} // 2 is margin
+          // onEndReached={_handleLoadMore}
+          onEndReachedThreshold={0.3}
+          onMomentumScrollBegin={() =>
+            (onEndReachedCalledDuringMomentum = false)
+          }
+          drawDistance={height * 5}
+          initialNumToRender={21}
+          maxToRenderPerBatch={12}
+        // ref={ref}
         />
+      }
 
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Welcome!</ThemedText>
-        </ThemedView>
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-          <ThemedText>
-            Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-            Press{' '}
-            <ThemedText type="defaultSemiBold">
-              {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-            </ThemedText>{' '}
-            to open developer tools.
-          </ThemedText>
-        </ThemedView>
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          <ThemedText>
-            Tap the Explore tab to learn more about what's included in this starter app.
-          </ThemedText>
-        </ThemedView>
-        <ThemedView style={styles.stepContainer}>
-          <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-          <ThemedText>
-            When you're ready, run{' '}
-            <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-            <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-            <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-            <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-          </ThemedText>
-        </ThemedView>
-      </ParallaxScrollView>
-    </ThemedDrawer>
+      {
+        tabSelected === 'Fresh' &&
+        <FlashList
+          keyExtractor={keyExtractor}
+          numColumns={1}
+          data={fresh}
+          renderItem={renderItem}
+          estimatedItemSize={height} // 2 is margin
+          // onEndReached={_handleLoadMore}
+          onEndReachedThreshold={0.3}
+          onMomentumScrollBegin={() =>
+            (onEndReachedCalledDuringMomentum = false)
+          }
+          drawDistance={height * 5}
+          initialNumToRender={21}
+          maxToRenderPerBatch={12}
+        // ref={ref}
+        />
+      }
+
+      {
+        tabSelected === 'Trending' &&
+        <FlashList
+          keyExtractor={keyExtractor}
+          numColumns={1}
+          data={trending}
+          renderItem={renderItem}
+          estimatedItemSize={height} // 2 is margin
+          // onEndReached={_handleLoadMore}
+          onEndReachedThreshold={0.3}
+          onMomentumScrollBegin={() =>
+            (onEndReachedCalledDuringMomentum = false)
+          }
+          drawDistance={height * 5}
+          initialNumToRender={21}
+          maxToRenderPerBatch={12}
+        // ref={ref}
+        />
+      }
+
+    </ThemedDrawer >
   );
 }
 
@@ -81,4 +198,18 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
   },
+  postContainer: {
+    width: '100%',
+    aspectRatio: 1,
+    borderBottomColor: Colors.dark.border,
+    borderBottomWidth: 2,
+    borderTopColor: Colors.dark.border,
+    borderTopWidth: 2,
+  },
+  postMedia: {
+    width: '100%',
+    aspectRatio: 1,
+    resizeMode: 'contain'
+
+  }
 });
