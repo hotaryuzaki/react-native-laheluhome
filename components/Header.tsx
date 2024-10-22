@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { ReactElement, ReactNode, useCallback, useRef, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -86,8 +86,8 @@ export function Header({
   //   Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo, []);
   /*********************************** END COLLAPSIBLE STICKY HEADER ***********************************/
 
-  const renderTab = (): string[] => {
-    const returnView = [];
+  const renderTab = useCallback((): ReactNode => {
+    const returnView: ReactElement[] = [];
 
     tabList.map((tab) => {
       returnView.push(
@@ -104,12 +104,12 @@ export function Header({
     })
 
     return returnView;
-  }
+  }, [tabSelected]);
 
 
   return (
     <Animated.View style={{
-      height: insets.top + (49 * 2),
+      height: insets.top + (49 + 39),
       paddingTop: insets.top,
       transform: [{ translateY }],
       backgroundColor: Colors.dark.background,
@@ -121,8 +121,6 @@ export function Header({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: Colors[colorScheme].border
       }}>
         <TouchableOpacity
           style={styles.touch}
@@ -159,9 +157,8 @@ export function Header({
         </TouchableOpacity>
       </ThemedView>
 
-
       <ThemedView style={{
-        height: 49,
+        height: 39,
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: Colors[colorScheme].border
@@ -198,11 +195,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-evenly',
     textAlign: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.dark.border
   },
   tabContainerActive: {
     flex: 1,
     justifyContent: 'space-evenly',
     textAlign: 'center',
+    borderBottomWidth: 1,
     borderBottomColor: Colors.dark.tabIconSelected,
   },
   tabText: {

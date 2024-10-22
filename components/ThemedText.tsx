@@ -5,7 +5,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer' | 'tab';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer' | 'tab' | 'postUsername' | 'postTime' | 'postTitle' | 'postTag' | 'postCounter';
 };
 
 export function ThemedText({
@@ -28,6 +28,11 @@ export function ThemedText({
         type === 'link' ? styles.link : undefined,
         type === 'menuDrawer' ? styles.menuDrawer : undefined,
         type === 'tab' ? styles.tab : undefined,
+        type === 'postUsername' ? styles.postUsername : undefined,
+        type === 'postTime' ? styles.postTime : undefined,
+        type === 'postTitle' ? styles.postTitle : undefined,
+        type === 'postTag' ? styles.postTag : undefined,
+        type === 'postCounter' ? styles.postCounter : undefined,
         style,
       ]}
       {...rest}
@@ -68,5 +73,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 5,
     textAlign: 'center'
+  },
+
+  postUsername: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  postTime: {
+    fontSize: 14,
+    paddingHorizontal: 5,
+  },
+  postTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  postTag: {
+    fontSize: 16,
+    paddingHorizontal: 5,
+    fontWeight: 'bold',
+  },
+  postCounter: {
+    fontSize: 16,
+    marginLeft: 4,
+    fontWeight: 'bold',
   },
 });

@@ -10,35 +10,44 @@ const whiteHighlight = '#ffffff';
 const black = '#1a1a1a'; // MAIN BG COLOR
 const blackHighlight = '#0c0c0c';
 const grey = '#333333';
+const greyLight = '#414141';
 const orange = '#dd952a';
+const blueLight = '#699EDB';
+const blueLight2 = '#4f738b';
 
 export const Colors = {
   light: {
     text: white,
     textHighlight: whiteHighlight,
     background: black,
-    backgroundMedia: grey,
     border: blackHighlight,
+    borderGrey: greyLight,
     tint: tintColorDark,
     icon: white,
     tabIconDefault: white,
     tabIconSelected: tintColorDark,
     drawerMenuBgDefault: white,
-    drawerMenuBgSelected: '#65a4ec',
+    drawerMenuBgSelected: tintColorDark,
     sawerBackground: orange,
+    mediaBackground: grey,
+    mediaTimeIndicatorBackground: blueLight,
+    loadingIndicator: blueLight,
   },
   dark: {
     text: white,
     textHighlight: whiteHighlight,
     background: black,
-    backgroundMedia: grey,
     border: blackHighlight,
+    borderGrey: greyLight,
     tint: tintColorDark,
     icon: white,
     tabIconDefault: white,
     tabIconSelected: tintColorDark,
     drawerMenuBgDefault: white,
-    drawerMenuBgSelected: '#65a4ec',
+    drawerMenuBgSelected: tintColorDark,
     sawerBackground: orange,
+    mediaBackground: grey,
+    mediaTimeIndicatorBackground: blueLight,
+    loadingIndicator: blueLight,
   },
 };
