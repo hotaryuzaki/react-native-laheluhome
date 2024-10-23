@@ -11,13 +11,18 @@ const black = '#1a1a1a'; // MAIN BG COLOR
 const blackHighlight = '#0c0c0c';
 const grey = '#333333';
 const greyLight = '#414141';
+const greyLight2 = '#949494';
+const greyLight3 = '#c0c0c0';
 const orange = '#dd952a';
 const blueLight = '#699EDB';
 const blueLight2 = '#4f738b';
 
 export const Colors = {
   light: {
+    button: tintColorDark,
     text: white,
+    textSecondary: greyLight2,
+    textTertiary: greyLight3,
     textHighlight: whiteHighlight,
     background: black,
     border: blackHighlight,
@@ -30,11 +35,18 @@ export const Colors = {
     drawerMenuBgSelected: tintColorDark,
     sawerBackground: orange,
     mediaBackground: grey,
-    mediaTimeIndicatorBackground: blueLight,
+    mediaTimeIndicatorProgress: blueLight,
+    mediaTimeIndicatorBackground: blackHighlight,
     loadingIndicator: blueLight,
+    inputBackground: grey,
+    inputBorder: greyLight,
+    inputPlaceholder: greyLight2,
   },
   dark: {
+    button: tintColorDark,
     text: white,
+    textSecondary: greyLight2,
+    textTertiary: greyLight3,
     textHighlight: whiteHighlight,
     background: black,
     border: blackHighlight,
@@ -47,7 +59,11 @@ export const Colors = {
     drawerMenuBgSelected: tintColorDark,
     sawerBackground: orange,
     mediaBackground: grey,
-    mediaTimeIndicatorBackground: blueLight,
+    mediaTimeIndicatorProgress: blueLight,
+    mediaTimeIndicatorBackground: blackHighlight,
     loadingIndicator: blueLight,
+    inputBackground: grey,
+    inputBorder: greyLight,
+    inputPlaceholder: greyLight2,
   },
 };

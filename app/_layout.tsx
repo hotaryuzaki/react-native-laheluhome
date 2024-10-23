@@ -23,6 +23,8 @@ export default function RootLayout() {
 
   useEffect(() => {
     LogBox.ignoreLogs(['[Reanimated] Reduced motion setting is enabled on this device']); // Ignore log notification by message
+    LogBox.ignoreLogs(['Warning: Slider: Support for defaultProps']); // Ignore log notification by message
+
     if (loaded) {
       SplashScreen.hideAsync();
     }

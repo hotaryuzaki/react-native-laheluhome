@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { ReactElement, ReactNode, useCallback, useRef, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
@@ -5,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
 
+import { Constants } from '@/constants/Constants';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
@@ -116,7 +118,7 @@ export function Header({
       transition: "background-color 0.5s ease",
     }}>
       <ThemedView style={{
-        height: 49,
+        height: Constants.headerHeight,
         paddingHorizontal: 16,
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -139,7 +141,6 @@ export function Header({
           <Image
             style={styles.icon}
             source={IconLahelu}
-            transition={100}
           />
         </ThemedView>
 
@@ -158,7 +159,7 @@ export function Header({
       </ThemedView>
 
       <ThemedView style={{
-        height: 39,
+        height: Constants.tabHeight,
         flexDirection: 'row',
         borderBottomWidth: 1,
         borderBottomColor: Colors[colorScheme].border

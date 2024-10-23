@@ -1,11 +1,12 @@
 import { Text, type TextProps, StyleSheet } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { Colors } from '@/constants/Colors';
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer' | 'tab' | 'postUsername' | 'postTime' | 'postTitle' | 'postTag' | 'postCounter';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer' | 'tab' | 'postUsername' | 'postTime' | 'postTitle' | 'postTag' | 'postCounter' | 'modalTitle' | 'modalText' | 'signInGoogle';
 };
 
 export function ThemedText({
@@ -33,6 +34,9 @@ export function ThemedText({
         type === 'postTitle' ? styles.postTitle : undefined,
         type === 'postTag' ? styles.postTag : undefined,
         type === 'postCounter' ? styles.postCounter : undefined,
+        type === 'modalTitle' ? styles.modalTitle : undefined,
+        type === 'modalText' ? styles.modalText : undefined,
+        type === 'signInGoogle' ? styles.signInGoogle : undefined,
         style,
       ]}
       {...rest}
@@ -51,7 +55,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   title: {
-    fontSize: 32,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   subtitle: {
@@ -81,6 +85,7 @@ const styles = StyleSheet.create({
   },
   postTime: {
     fontSize: 14,
+    color: Colors.dark.textTertiary,
     paddingHorizontal: 5,
   },
   postTitle: {
@@ -97,4 +102,19 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontWeight: 'bold',
   },
+  modalTitle: {
+    fontSize: 21,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 13,
+    textAlign: 'center',
+    color: Colors.dark.textTertiary,
+  },
+
+  signInGoogle: {
+    fontSize: 13,
+    textAlign: 'center',
+    color: Colors.dark.textTertiary,
+  }
 });

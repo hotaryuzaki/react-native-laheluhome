@@ -1,28 +1,40 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { ReactElement, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, StyleSheet } from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import PagerView from 'react-native-pager-view';
-import { FlashList, type FlashListProps, type ListRenderItem } from "@shopify/flash-list";
+import { FlashList, type ListRenderItem } from "@shopify/flash-list";
+import Modal from "react-native-modal";
 import { Image } from 'expo-image';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
-import { Config } from '@/constants/Config';
+import { Constants } from '@/constants/Constants';
 import { Colors } from '@/constants/Colors';
+import { Functions } from '@/constants/Functions';
 import { ThemedDrawer } from '@/components/ThemedDrawer';
 import { Header } from '@/components/Header';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
+import { ThemedButton } from '@/components/ThemedButton';
+import { ImageAvatar } from '@/components/ImageAvatar';
+import { ImagePost } from '@/components/ImagePost';
+import { ImageLaheluIcon } from '@/components/ImageLaheluIcon';
+import { VideoPlayer } from '@/components/VideoPlayer';
+
+const IconLaheluOnly = require('@/assets/images/lahelu-icon-only.png');
+const GoogleLogo = require('@/assets/images/google-logo.png');
 
 const width = Dimensions.get('window').width; // SCREEN WIDTH SIZE
 const height = Dimensions.get('window').height; // SCREEN HEIGHT SIZE
 
 // FIXING FLATLIST BUG: onEndReached CALLED MULTIPLE TIMES
 let onEndReachedCalledDuringMomentum: boolean = true;
+
+const today = new Date();
 
 interface PostData {
   ageTime: number;
@@ -71,6 +83,8 @@ export default function Home() {
   const [trendingPage, setTrendingPage] = useState<number>(0);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [loadingMoreIndicator, setLoadingMoreIndicator] = useState<boolean>(false);
+  const [modalNotLogin, setModalNotLogin] = useState<boolean>(false);
+
   const isMounted = useRef<boolean>(true); // REF TO TRACK MOUNTED STATUS
   const refPagerView = useRef<PagerView | null>(null); // PAGERVIEW REF
   const refFlashList = useRef<FlashList<unknown> | null>(null); // FLASHLIST REF
@@ -86,9 +100,9 @@ export default function Home() {
           // CHECK & SAVE TO EACH TAB STATE
           if (homePagination?.hasMore === false) { throw ('end of page'); }
 
-          console.log(`${Config.apiUrl}/post/get-posts?feed=1&page=${homePage}`);
+          console.log(`${Constants.apiUrl}/post/get-posts?feed=1&page=${homePage}`);
           const response = await axios.get(
-            `${Config.apiUrl}/post/get-posts?feed=1&page=${homePage}`
+            `${Constants.apiUrl}/post/get-posts?feed=1&page=${homePage}`
           );
 
           // UPDATE STATE ONLY IF THE COMPONENT IS STILL MOUNTED
@@ -112,9 +126,9 @@ export default function Home() {
           // CHECK & SAVE TO EACH TAB STATE
           if (freshPagination?.hasMore === false) { throw ('end of page'); }
 
-          console.log(`${Config.apiUrl}/post/get-posts?feed=0&page=${freshPage}`);
+          console.log(`${Constants.apiUrl}/post/get-posts?feed=0&page=${freshPage}`);
           const response = await axios.get(
-            `${Config.apiUrl}/post/get-posts?feed=0&page=${freshPage}`
+            `${Constants.apiUrl}/post/get-posts?feed=0&page=${freshPage}`
           );
 
           // UPDATE STATE ONLY IF THE COMPONENT IS STILL MOUNTED
@@ -138,9 +152,9 @@ export default function Home() {
           // CHECK & SAVE TO EACH TAB STATE
           if (trendingPagination?.hasMore === false) { throw ('end of page'); }
 
-          console.log(`${Config.apiUrl}/post/get-posts?feed=2&page=${trendingPage}`);
+          console.log(`${Constants.apiUrl}/post/get-posts?feed=2&page=${trendingPage}`);
           const response = await axios.get(
-            `${Config.apiUrl}/post/get-posts?feed=2&page=${trendingPage}`
+            `${Constants.apiUrl}/post/get-posts?feed=2&page=${trendingPage}`
           );
 
           // UPDATE STATE ONLY IF THE COMPONENT IS STILL MOUNTED
@@ -212,12 +226,7 @@ export default function Home() {
     return (
       <ThemedView key={index} style={styles.postContainer}>
         <ThemedView style={styles.postHeaderContainer}>
-          <Image
-            style={styles.postHeaderAvatar}
-            source={item.userAvatar ? item.userAvatar : `${Config.webUrl}/media/default/fresh-pp.jpg`}
-            transition={500}
-            contentFit='contain'
-          />
+          <ImageAvatar source={item.userAvatar} />
 
           <ThemedView style={styles.postUsernameContainer}>
             <ThemedText type='postUsername'>
@@ -225,7 +234,7 @@ export default function Home() {
             </ThemedText>
 
             <ThemedText type='postTime'>
-              · {item.ageTime}
+              · {Functions.msToDayTime(today.getTime() - item.createTime)}
             </ThemedText>
           </ThemedView>
 
@@ -238,18 +247,11 @@ export default function Home() {
           </ThemedText>
         </ThemedView>
 
-        <ThemedView style={styles.postMediaContainer}>
-          {
-            item.mediaType === 0 && (
-              <Image
-                style={styles.postMedia}
-                source={item.media}
-                transition={500}
-                contentFit='contain'
-              />
-            )
-          }
-        </ThemedView>
+        {
+          item.mediaType === 0
+            ? <ImagePost source={item.media} />
+            : <VideoPlayer source={item.media} id={`${item.feed}-${item.postID}`} />
+        }
 
         <ThemedScrollView
           horizontal={true}
@@ -270,18 +272,22 @@ export default function Home() {
 
         <ThemedView style={styles.postSocialContainer}>
           <ThemedView style={styles.postBoxContainer}>
-            <ThemedView style={styles.postBoxContent}>
-              <MaterialCommunityIcons name="arrow-up-bold-outline" size={24} color={iconColor} />
-              <ThemedText type='postCounter'>
-                {item.totalUpvotes ? item.totalUpvotes : 'vote'}
-              </ThemedText>
-            </ThemedView>
+            <TouchableOpacity onPress={() => setModalNotLogin(true)}>
+              <ThemedView style={styles.postBoxContent}>
+                <MaterialCommunityIcons name="arrow-up-bold-outline" size={24} color={iconColor} />
+                <ThemedText type='postCounter'>
+                  {item.totalUpvotes ? item.totalUpvotes : 'vote'}
+                </ThemedText>
+              </ThemedView>
+            </TouchableOpacity>
 
             <ThemedView style={styles.postBoxSeparator} />
 
-            <ThemedView>
-              <MaterialCommunityIcons name="arrow-down-bold-outline" size={24} color={iconColor} />
-            </ThemedView>
+            <TouchableOpacity onPress={() => setModalNotLogin(true)}>
+              <ThemedView>
+                <MaterialCommunityIcons name="arrow-down-bold-outline" size={24} color={iconColor} />
+              </ThemedView>
+            </TouchableOpacity>
           </ThemedView>
 
           <ThemedView style={[styles.postBoxContainer, { marginLeft: 8 }]}>
@@ -307,7 +313,7 @@ export default function Home() {
     tags.map((tag) => {
       retTags.push(
         <ThemedView key={tag} style={styles.postPillContainer}>
-          <FontAwesome6 name="hashtag" size={16} color={iconColor} />
+          <FontAwesome6 name="hashtag" size={12} color={iconColor} />
           <ThemedText type='postTag'>
             {tag}
           </ThemedText>
@@ -345,8 +351,6 @@ export default function Home() {
       case 'Home': {
         if (homePagination?.hasMore) { // CHECK FOR PAGINATION STATUS
           if (!onEndReachedCalledDuringMomentum) { // HANDLER AGAR TIDAK MULTIPLE TRIGGERED
-            console.log('DISINI homePagination');
-
             onEndReachedCalledDuringMomentum = true;
             setHomePage((prev) => prev + 1);
             setLoadingMoreIndicator(true); // LOADING MORE UI
@@ -359,8 +363,6 @@ export default function Home() {
       case 'Fresh': {
         if (freshPagination?.hasMore) { // CHECK FOR PAGINATION STATUS
           if (!onEndReachedCalledDuringMomentum) { // HANDLER AGAR TIDAK MULTIPLE TRIGGERED
-            console.log('DISINI freshPagination');
-
             onEndReachedCalledDuringMomentum = true;
             setFreshPage((prev) => prev + 1);
             setLoadingMoreIndicator(true); // LOADING MORE UI
@@ -373,8 +375,6 @@ export default function Home() {
       case 'Trending': {
         if (trendingPagination?.hasMore) { // CHECK FOR PAGINATION STATUS
           if (!onEndReachedCalledDuringMomentum) { // HANDLER AGAR TIDAK MULTIPLE TRIGGERED
-            console.log('DISINI trendingPagination');
-
             onEndReachedCalledDuringMomentum = true;
             setTrendingPage((prev) => prev + 1);
             setLoadingMoreIndicator(true); // LOADING MORE UI
@@ -464,6 +464,47 @@ export default function Home() {
         // ref={refFlashList}
         />
       </PagerView>
+
+      <Modal
+        isVisible={modalNotLogin}
+        animationIn="slideInUp"
+        animationOut="slideOutDown"
+        onBackdropPress={() => setModalNotLogin(false)}
+        onBackButtonPress={() => setModalNotLogin(false)}
+        backdropOpacity={0.4}
+        // BELOW ARE FOR ENHANCES PERFORMANCE
+        useNativeDriver={true}
+        useNativeDriverForBackdrop={true}
+        hideModalContentWhileAnimating={true}
+      >
+        <ThemedView style={styles.modalContainer}>
+          <ThemedView style={styles.modalView}>
+            <ImageLaheluIcon source={IconLaheluOnly} />
+
+            <ThemedText type='modalTitle' style={styles.modalTitle}>
+              Selamat datang!
+            </ThemedText>
+            <ThemedText type='modalText'>
+              Buat meme, beri vote, dan berkomentar setelah login!
+            </ThemedText>
+
+            <ThemedButton
+              name='signInGoogle'
+              style={{ marginTop: 20 }}
+              onPress={() => setModalNotLogin(!modalNotLogin)}
+            >
+              <Image
+                style={styles.imageGoogle}
+                source={GoogleLogo}
+                contentFit='contain'
+              />
+              <ThemedText type='signInGoogle'>
+                Sign in dengan Google
+              </ThemedText>
+            </ThemedButton>
+          </ThemedView>
+        </ThemedView>
+      </Modal>
     </ThemedDrawer >
   );
 }
@@ -498,14 +539,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingVertical: 10,
-  },
-  postMediaContainer: {
-    flex: 1,
-    backgroundColor: Colors.dark.mediaBackground,
-  },
-  postMedia: {
-    flex: 1,
-    aspectRatio: 1,
   },
   postTagContainer: {
     flex: 1,
@@ -556,4 +589,30 @@ const styles = StyleSheet.create({
   postBoxSpace: {
     flex: 1,
   },
+
+  modalContainer: {
+    margin: 0,
+    backgroundColor: 'transparent',
+  },
+  modalView: {
+    alignItems: 'center',
+    borderRadius: 8,
+    padding: 16,
+    elevation: 10,
+    backgroundColor: Colors.dark.background,
+  },
+  modalTitle: {
+    lineHeight: 50
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+
+  imageGoogle: {
+    width: 24,
+    aspectRatio: 1,
+    marginRight: 10
+  }
 });
