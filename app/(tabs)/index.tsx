@@ -463,6 +463,7 @@ export default function Home() {
       setOpen={(value) => setOpen(value)}
       search={search}
       setSearch={(value) => setSearch(value)}
+      onPressLogin={(value) => setModalNotLogin(value)}
     >
       <Header
         tabList={tabList}
