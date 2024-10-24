@@ -14,7 +14,15 @@ import { ThemedText } from '@/components/ThemedText';
 
 const width = Dimensions.get('window').width; // SCREEN WIDTH SIZE
 
-export function VideoPlayer({ id, source, autoplay = false }: VideoNativeProps & { id: string, source: string; autoplay?: boolean }) {
+export type VideoPlayerProps = VideoNativeProps & {
+  id: string,
+  source: string;
+  thumbnail?: string;
+  autoplay?: boolean
+};
+
+
+export function VideoPlayer({ id, source, thumbnail, autoplay = false }: VideoPlayerProps) {
   const videoRef = useRef<VideoRef | null>(null); // PAGERVIEW REF
   const [pausedManual, setPausedManual] = useState<boolean | undefined>(undefined); // PAUSEDMANUAL IS HIGH PRIORITY STATE
   const [paused, setPaused] = useState<boolean>(!autoplay); // PAUSED IS THE TRIGGERED PLAYBACK 
@@ -25,17 +33,12 @@ export function VideoPlayer({ id, source, autoplay = false }: VideoNativeProps &
 
   const color = useThemeColor({}, 'text');
 
-  // useEffect(() => {
-  //   console.log('useEffect duration', id, duration);
-  // }, [duration]);
-
-  const onPlayPausePress = () => { setPausedManual((prev) => !prev); };
-
   // USEEFFECT FOR LOADING MORE PAGINATION WHEN ONENDREACHED & REFRESH PAGE
   useEffect(() => {
-    console.log('pausedManual', pausedManual);
     if (pausedManual != undefined) setPaused(pausedManual); // PAUSEDMANUAL HAS TO BE TRIGGERED BY USER
   }, [pausedManual]);
+
+  const onPlayPausePress = () => { setPausedManual((prev) => !prev); };
 
   const onProgress = (data: { currentTime: number }) => {
     setCurrentTime(data.currentTime);
@@ -98,6 +101,10 @@ export function VideoPlayer({ id, source, autoplay = false }: VideoNativeProps &
           onLoad={(data) => setDuration(data.duration)}
           repeat={true}
           muted={muted}
+        // poster={{
+        //   source: { uri: thumbnail },
+        //   resizeMode: "contain",
+        // }}
         />
 
         <TouchableOpacity

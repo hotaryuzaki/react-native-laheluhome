@@ -1,4 +1,10 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
+
+/**
+ * NOTE:
+ * INVIEWPORT LISTENER IN EACH TAB & EACH VIDEO, AND NOT HANDLING THE PLAYING VIDEO, WILL MAKE AN PERFORMANCE ISSUE
+ */
+
 import { ReactElement, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
@@ -31,10 +37,14 @@ const GoogleLogo = require('@/assets/images/google-logo.png');
 const width = Dimensions.get('window').width; // SCREEN WIDTH SIZE
 const height = Dimensions.get('window').height; // SCREEN HEIGHT SIZE
 
+const today = new Date();
+
 // FIXING FLATLIST BUG: onEndReached CALLED MULTIPLE TIMES
 let onEndReachedCalledDuringMomentum: boolean = true;
 
-const today = new Date();
+// COLLAPSIBLE STICKY HEADER VARIABLE
+const { diffClamp } = Animated;
+const headerHeight = 90;
 
 interface PostData {
   ageTime: number;
@@ -84,6 +94,7 @@ export default function Home() {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [loadingMoreIndicator, setLoadingMoreIndicator] = useState<boolean>(false);
   const [modalNotLogin, setModalNotLogin] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const isMounted = useRef<boolean>(true); // REF TO TRACK MOUNTED STATUS
   const refPagerView = useRef<PagerView | null>(null); // PAGERVIEW REF
@@ -117,6 +128,7 @@ export default function Home() {
             }
             else setHome(response.data.postInfos); // SAVE DATA STATE (PAGE 1)
             setLoadingMoreIndicator(false);
+            setRefreshing(false);
           }
 
           return response.data;
@@ -143,6 +155,7 @@ export default function Home() {
             }
             else setFresh(response.data.postInfos); // SAVE DATA STATE (PAGE 1)
             setLoadingMoreIndicator(false);
+            setRefreshing(false);
           }
 
           return response.data;
@@ -169,6 +182,7 @@ export default function Home() {
             }
             else setTrending(response.data.postInfos); // SAVE DATA STATE (PAGE 1)
             setLoadingMoreIndicator(false);
+            setRefreshing(false);
           }
 
           return response.data;
@@ -209,18 +223,42 @@ export default function Home() {
   useEffect(() => {
     isMounted.current = true; // SET MOUNTED STATUS TO TRUE ON MOUNT
 
-    if (loadingMore && homePagination?.hasMore) {
-      setLoadingMore(false); // SET FLAG FIRST, IS IMPORTANT TO HANDLE _handleLoadMore CALLED MULTIPLE TIMES (THIS IS RN BUG)
-      _getPost();
-    }
+    switch (tabSelected) {
+      case 'Home': {
+        if (loadingMore && homePagination?.hasMore) {
+          setLoadingMore(false); // SET FLAG FIRST, IS IMPORTANT TO HANDLE _handleLoadMore CALLED MULTIPLE TIMES (THIS IS RN BUG)
+          _getPost();
+        }
+        break;
+      }
+
+      case 'Fresh': {
+        if (loadingMore && freshPagination?.hasMore) {
+          setLoadingMore(false); // SET FLAG FIRST, IS IMPORTANT TO HANDLE _handleLoadMore CALLED MULTIPLE TIMES (THIS IS RN BUG)
+          _getPost();
+        }
+        break;
+      }
+
+      case 'Trending': {
+        if (loadingMore && trendingPagination?.hasMore) {
+          setLoadingMore(false); // SET FLAG FIRST, IS IMPORTANT TO HANDLE _handleLoadMore CALLED MULTIPLE TIMES (THIS IS RN BUG)
+          _getPost();
+        }
+        break;
+      }
+
+      default:
+        break;
+    };
 
     // CLEANUP FUNCTION TO SET THE MOUNTED STATUS TO FALSE ON UNMOUNT
     return () => {
       isMounted.current = false;
     };
-  }, [loadingMore, homePagination]);
+  }, [loadingMore, tabSelected]);
 
-  const keyExtractor = useCallback((item: { postID: string }, index: number) => `${index}-${item.postID}`, []);
+  const keyExtractor = useCallback((item: { feed: number, postID: string }, index: number) => `${index}-${item.feed}-${item.postID}`, []);
 
   const renderItem: ListRenderItem<PostData> = ({ item, index }) => {
     return (
@@ -346,7 +384,7 @@ export default function Home() {
 
   }, [loadingMoreIndicator]);
 
-  const _handleLoadMore = useCallback((): void => {
+  const _handleLoadMore = useCallback(() => {
     switch (tabSelected) {
       case 'Home': {
         if (homePagination?.hasMore) { // CHECK FOR PAGINATION STATUS
@@ -390,6 +428,34 @@ export default function Home() {
 
   }, [tabSelected, onEndReachedCalledDuringMomentum, homePagination, freshPagination, trendingPagination]);
 
+  const _handleRefresh = async () => {
+    // RESET DATA
+    onEndReachedCalledDuringMomentum = false;
+    setRefreshing(true);
+
+    if (tabSelected == 'Home') {
+      setHome([]);
+      setHomePagination({});
+      setHomePage(0);
+    }
+    else if (tabSelected == 'Fresh') {
+      setFresh([]);
+      setFreshPagination({});
+      setFreshPage(0);
+    }
+    else {
+      setTrending([]);
+      setTrendingPagination({});
+      setTrendingPage(0);
+    }
+    // setLoadingMoreIndicator(true);
+    // setLoadingMore(true);
+
+    setTimeout(() => {
+      _getPost();
+    }, 200);
+
+  };
 
   return (
     <ThemedDrawer
@@ -427,7 +493,11 @@ export default function Home() {
             (onEndReachedCalledDuringMomentum = false)
           }
           drawDistance={height * 5}
-        // ref={refFlashList}
+          // ref={refFlashList}
+          // onScroll={_handleScroll}
+          // onMomentumScrollEnd={_handleSnap}
+          refreshing={refreshing}
+          onRefresh={_handleRefresh}
         />
 
         <FlashList
@@ -444,7 +514,11 @@ export default function Home() {
             (onEndReachedCalledDuringMomentum = false)
           }
           drawDistance={height * 5}
-        // ref={refFlashList}
+          // ref={refFlashList}
+          // onScroll={_handleScroll}
+          // onMomentumScrollEnd={_handleSnap}
+          refreshing={refreshing}
+          onRefresh={_handleRefresh}
         />
 
         <FlashList
@@ -461,7 +535,11 @@ export default function Home() {
             (onEndReachedCalledDuringMomentum = false)
           }
           drawDistance={height * 5}
-        // ref={refFlashList}
+          // ref={refFlashList}
+          // onScroll={_handleScroll}
+          // onMomentumScrollEnd={_handleSnap}
+          refreshing={refreshing}
+          onRefresh={_handleRefresh}
         />
       </PagerView>
 

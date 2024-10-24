@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { ReactElement, ReactNode, useCallback, useRef, useState } from "react";
-import { Animated, StyleSheet, TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
+import { Animated, StyleSheet, TouchableOpacity, useColorScheme, type TransformsStyle, type ViewProps } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -18,12 +18,9 @@ export type HeaderProps = {
   tabSelected: string,
   setTabSelected: (tab: string) => void,
   onPressMenu?: (open: boolean) => void,
-  onPressSearch?: (open: boolean) => void
+  onPressSearch?: (open: boolean) => void,
+  translateY?: TransformsStyle
 };
-
-// COLLAPSIBLE STICKY HEADER VARIABLE
-const { diffClamp } = Animated;
-const headerHeight = 51 + 48;
 
 
 export function Header({
@@ -31,62 +28,12 @@ export function Header({
   tabSelected,
   setTabSelected,
   onPressMenu = () => { },
-  onPressSearch = () => { }
+  onPressSearch = () => { },
+  translateY
 }: HeaderProps) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? 'dark';
-
-  /*********************************** START COLLAPSIBLE STICKY HEADER ***********************************/
-  const ref = useRef(null); // ANIMATED FLATLIST REF
-  const scrollY = useRef(new Animated.Value(0));
-  const scrollYClamped = diffClamp(scrollY.current, 0, headerHeight);
-  const translateY = scrollYClamped.interpolate({
-    inputRange: [0, headerHeight],
-    outputRange: [0, -(headerHeight - 51)],
-  });
-
-  // const translateYNumber = useRef();
-  // translateY.addListener(({ value }) => {
-  //   translateYNumber.current = value;
-  // });
-
-  // const _handleScroll = useCallback(Animated.event(
-  //   [
-  //     {
-  //       nativeEvent: {
-  //         contentOffset: { y: scrollY.current },
-  //       },
-  //     },
-  //   ],
-  //   {
-  //     useNativeDriver: true,
-  //   },
-  // ), []);
-
-  // const _handleSnap = useCallback(({nativeEvent}) => {
-  //   const offsetY = nativeEvent.contentOffset.y;
-  //   if (
-  //     !(
-  //       translateYNumber.current === 0 ||
-  //       translateYNumber.current === -(headerHeight - 51)
-  //     )
-  //   ) {
-  //     if (ref.current) {
-  //       ref.current.scrollToOffset({
-  //         offset:
-  //           _getCloser(translateYNumber.current, -(headerHeight - 51), 0) ===
-  //           -(headerHeight - 51)
-  //             ? offsetY + headerHeight - 51
-  //             : offsetY - headerHeight - 51,
-  //       });
-  //     }
-  //   }
-  // }, []);
-
-  // const _getCloser = useCallback((value, checkOne, checkTwo) =>
-  //   Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo, []);
-  /*********************************** END COLLAPSIBLE STICKY HEADER ***********************************/
 
   const renderTab = useCallback((): ReactNode => {
     const returnView: ReactElement[] = [];
@@ -110,20 +57,24 @@ export function Header({
 
 
   return (
-    <Animated.View style={{
-      height: insets.top + (49 + 39),
-      paddingTop: insets.top,
-      transform: [{ translateY }],
-      backgroundColor: Colors.dark.background,
-      transition: "background-color 0.5s ease",
-    }}>
-      <ThemedView style={{
-        height: Constants.headerHeight,
-        paddingHorizontal: 16,
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-      }}>
+    <Animated.View
+      style={{
+        height: insets.top + (49 + 39),
+        paddingTop: insets.top,
+        transform: [{ translateY }],
+        backgroundColor: Colors.dark.background,
+        transition: "background-color 0.5s ease",
+      }}
+    >
+      <ThemedView
+        style={{
+          height: Constants.headerHeight,
+          paddingHorizontal: 16,
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+        }}
+      >
         <TouchableOpacity
           style={styles.touch}
           onPress={() => onPressMenu(true)}
