@@ -61,7 +61,7 @@ export function Header({
       style={{
         height: insets.top + (49 + 39),
         paddingTop: insets.top,
-        transform: [{ translateY }],
+        // transform: [{ translateY }],
         backgroundColor: Colors.dark.background,
         transition: "background-color 0.5s ease",
       }}

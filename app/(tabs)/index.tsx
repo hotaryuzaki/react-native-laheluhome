@@ -42,10 +42,6 @@ const today = new Date();
 // FIXING FLATLIST BUG: onEndReached CALLED MULTIPLE TIMES
 let onEndReachedCalledDuringMomentum: boolean = true;
 
-// COLLAPSIBLE STICKY HEADER VARIABLE
-const { diffClamp } = Animated;
-const headerHeight = 90;
-
 interface PostData {
   ageTime: number;
   createTime: number;
@@ -459,11 +455,16 @@ export default function Home() {
 
   return (
     <ThemedDrawer
+      tabSelected={tabSelected}
       open={open}
       setOpen={(value) => setOpen(value)}
       search={search}
       setSearch={(value) => setSearch(value)}
       onPressLogin={(value) => setModalNotLogin(value)}
+      onPressTab={(value) => {
+        setOpen(false);
+        setTabSelected(value);
+      }}
     >
       <Header
         tabList={tabList}

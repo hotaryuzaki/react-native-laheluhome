@@ -18,23 +18,29 @@ import { InlineIcon } from '@/components/InlineIcon';
 import { ImageTagSmall } from '@/components/ImageTagSmall';
 
 export type ThemedDrawerProps = {
+  tab?: string;
+  tabSelected?: string;
   open: boolean;
   setOpen: (open: boolean) => void;
   search: boolean;
   setSearch: (search: boolean) => void,
   onPressLogin: (show: boolean) => void,
+  onPressTab: (tab: string) => void,
 };
 
 
 export function ThemedDrawer({
   children,
+  tab,
+  tabSelected,
   open,
   search,
   lightColor,
   darkColor,
   setOpen = () => { },
   setSearch = () => { },
-  onPressLogin = () => { }
+  onPressLogin = () => { },
+  onPressTab = () => { }
 }: ViewProps & ThemedDrawerProps) {
   const insets = useSafeAreaInsets();
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
@@ -84,26 +90,34 @@ export function ThemedDrawer({
         </ThemedView>
 
         <ThemedView style={styles.menuContainer}>
-          <ListView name='/' type='single'>
-            <InlineIcon name='home-outline' color={color} size={24} style={{ width: 26 }} />
-            <ThemedText type="menuDrawerActive">Home</ThemedText>
-          </ListView>
+          <TouchableOpacity onPress={() => onPressTab('Home')}>
+            <ListView name='/' tab='Home' tabSelected={tabSelected} type='single'>
+              <InlineIcon name='home-outline' color={color} size={24} style={{ width: 26 }} />
+              <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+                Home
+              </ThemedText>
+            </ListView>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => onPressTab('Fresh')}>
+            <ListView name='/' tab='Fresh' tabSelected={tabSelected} type='single'>
+              <InlineIcon name='clock-outline' color={color} size={20} style={{ width: 26 }} />
+              <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+                Fresh
+              </ThemedText>
+            </ListView>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => onPressTab('Trending')}>
+            <ListView name='/' tab='Trending' tabSelected={tabSelected} type='single'>
+              <InlineIcon name='trending-up' color={color} size={24} style={{ width: 26 }} />
+              <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+                Trending
+              </ThemedText>
+            </ListView>
+          </TouchableOpacity>
 
           <ListView name='/topik' type='single'>
-            <InlineIcon name='clock-outline' color={color} size={20} style={{ width: 26 }} />
-            <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
-              Fresh
-            </ThemedText>
-          </ListView>
-
-          <ListView name='/post' type='single'>
-            <InlineIcon name='trending-up' color={color} size={24} style={{ width: 26 }} />
-            <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
-              Trending
-            </ThemedText>
-          </ListView>
-
-          <ListView name='/profil' type='single'>
             <InlineIcon name='account-multiple-outline' color={color} size={24} style={{ width: 26 }} />
             <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
               Topik
