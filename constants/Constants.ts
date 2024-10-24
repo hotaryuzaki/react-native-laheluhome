@@ -4,10 +4,12 @@
 
 const webUrl = 'https://lahelu.com';
 const apiUrl = 'https://lahelu.com/api';
+const postUrl = 'https://lahelu.com/post';
 
 export const Constants = {
   webUrl,
   apiUrl,
+  postUrl,
   headerHeight: 49,
   tabHeight: 39,
   tags: [

@@ -11,6 +11,7 @@ import axios from 'axios';
 import PagerView from 'react-native-pager-view';
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
 import { Image } from 'expo-image';
+import Share from 'react-native-share';
 import Modal from "react-native-modal";
 import {
   BottomSheetBackdrop,
@@ -264,6 +265,11 @@ export default function Home() {
     };
   }, [loadingMore, tabSelected]);
 
+  const _shareIt = (title: string, url: string) => {
+    const data = { title, message: `${title} ${url}` };
+    Share.open(data);
+  }
+
   const keyExtractor = useCallback((item: { feed: number, postID: string }, index: number) => `${index}-${item.feed}-${item.postID}`, []);
 
   const renderItem: ListRenderItem<PostData> = ({ item, index }) => {
@@ -369,9 +375,11 @@ export default function Home() {
 
           <ThemedView style={styles.postBoxSpace} />
 
-          <ThemedView style={[styles.postBoxContainer, { paddingHorizontal: 6 }]}>
-            <MaterialCommunityIcons name="share-outline" size={32} color={iconColor} />
-          </ThemedView>
+          <TouchableOpacity onPress={() => _shareIt(item.title, `${Constants.postUrl}/${item.postID}`)}>
+            <ThemedView style={[styles.postBoxContainer, { paddingHorizontal: 6 }]}>
+              <MaterialCommunityIcons name="share-outline" size={32} color={iconColor} />
+            </ThemedView>
+          </TouchableOpacity>
         </ThemedView>
       </ThemedView>
     );
