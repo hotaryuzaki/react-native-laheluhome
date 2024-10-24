@@ -90,7 +90,7 @@ export function VideoPlayer({ id, source, thumbnail, autoplay = false }: VideoPl
       delay={100}
       viewScreen={40}
     >
-      <ThemedView style={styles.postMediaContainer}>
+      <ThemedView key={id} style={styles.postMediaContainer}>
         <Video
           ref={videoRef}
           source={{ uri: source }}

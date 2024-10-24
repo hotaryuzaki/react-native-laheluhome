@@ -1,22 +1,28 @@
-import { Button, StyleSheet, TextInput, TouchableOpacity, type ViewProps } from 'react-native';
+import { ReactElement } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, type ViewProps } from 'react-native';
 import { Drawer } from 'react-native-drawer-layout';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { Colors } from '@/constants/Colors';
+import { Constants } from '@/constants/Constants';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedButton } from '@/components/ThemedButton';
 import { ListView } from '@/components/ListView';
-import { Collapsible } from '@/components/Collapsible';
+import { CollapsibleMenu } from '@/components/CollapsibleMenu';
 import { InlineIcon } from '@/components/InlineIcon';
+import { ImageTagSmall } from '@/components/ImageTagSmall';
 
 export type ThemedDrawerProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   search: boolean;
-  setSearch: (search: boolean) => void
+  setSearch: (search: boolean) => void,
+  onPressLogin: (show: boolean) => void,
 };
 
 
@@ -27,62 +33,114 @@ export function ThemedDrawer({
   lightColor,
   darkColor,
   setOpen = () => { },
-  setSearch = () => { }
+  setSearch = () => { },
+  onPressLogin = () => { }
 }: ViewProps & ThemedDrawerProps) {
   const insets = useSafeAreaInsets();
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
   const colorPlaceholder = useThemeColor({ light: lightColor, dark: darkColor }, 'inputPlaceholder');
 
+
+  const renderMenuTag = () => {
+    const retTags: ReactElement[] = [];
+
+    Constants.tags.map((tag: string[]) => {
+      retTags.push(
+        <ListView key={tag[0]} name={`/${tag[0]}`} type='single'>
+          <ImageTagSmall source={tag[1]} />
+          <ThemedText type="menuDrawer" style={styles.tagMenu}>
+            {tag[0]}
+          </ThemedText>
+          <ThemedView style={styles.starContainer}>
+            <MaterialCommunityIcons name="star-outline" size={22} color={color} />
+          </ThemedView>
+        </ListView>
+      );
+    })
+
+    return retTags;
+  }
+
   const renderDrawerMenu = () => {
     return (
-      <ThemedScrollView showsVerticalScrollIndicator={false} style={styles.content}>
-        <ThemedView style={{ paddingVertical: 4, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color }}>
-          <ListView name='/'>
+      <ThemedScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+        <ThemedView>
+          <ThemedView style={styles.notLoginContainer}>
+            <ThemedText type='subtitle' style={styles.notLoginTitle}>
+              Mau ngepost meme kamu sendiri?
+            </ThemedText>
+
+            <ThemedText style={styles.notLoginText}>
+              Login dengan Google sekarang! Google sekarang!
+            </ThemedText>
+
+            <ThemedButton name='logIn' style={styles.notLoginButton} onPress={() => onPressLogin(true)}>
+              <ThemedText type='logIn'>
+                Login
+              </ThemedText>
+            </ThemedButton>
+          </ThemedView>
+        </ThemedView>
+
+        <ThemedView style={styles.menuContainer}>
+          <ListView name='/' type='single'>
             <InlineIcon name='home-outline' color={color} size={24} style={{ width: 26 }} />
-            <ThemedText type="menuDrawer">Home</ThemedText>
+            <ThemedText type="menuDrawerActive">Home</ThemedText>
           </ListView>
 
-          <ListView name='/topik'>
+          <ListView name='/topik' type='single'>
             <InlineIcon name='clock-outline' color={color} size={20} style={{ width: 26 }} />
-            <ThemedText type="menuDrawer">Fresh</ThemedText>
+            <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+              Fresh
+            </ThemedText>
           </ListView>
 
-          <ListView name='/post'>
+          <ListView name='/post' type='single'>
             <InlineIcon name='trending-up' color={color} size={24} style={{ width: 26 }} />
-            <ThemedText type="menuDrawer">Trending</ThemedText>
+            <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+              Trending
+            </ThemedText>
           </ListView>
 
-          <ListView name='/profil'>
+          <ListView name='/profil' type='single'>
             <InlineIcon name='account-multiple-outline' color={color} size={24} style={{ width: 26 }} />
-            <ThemedText type="menuDrawer">Topik</ThemedText>
+            <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+              Topik
+            </ThemedText>
           </ListView>
         </ThemedView>
 
-        <ThemedView style={{ paddingVertical: 4, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color }}>
+        <ThemedView style={styles.menuContainerWithBorder}>
           <ListView>
-            <Collapsible title="Meme Lain" style={{ marginLeft: 0 }}>
+            <CollapsibleMenu title="Meme Lain" style={{ marginLeft: 0 }}>
               <ListView name='/peringkat' style={{ paddingHorizontal: 0 }}>
-                <InlineIcon name='clock-outline' color={color} size={20} style={{ width: 26 }} />
-                <ThemedText type="menuDrawer">Peringkat</ThemedText>
+                <Ionicons name="trophy-outline" size={18} color={color} style={{ width: 26 }} />
+                <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+                  Peringkat
+                </ThemedText>
               </ListView>
 
               <ListView name='/tersimpan' style={{ paddingHorizontal: 0 }}>
-                <InlineIcon name='trending-up' color={color} size={24} style={{ width: 26 }} />
-                <ThemedText type="menuDrawer">Tersimpan</ThemedText>
+                <InlineIcon name="image-multiple-outline" size={18} color={color} style={{ width: 26 }} />
+                <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+                  Tersimpan
+                </ThemedText>
               </ListView>
 
               <ListView name='/acak' style={{ paddingHorizontal: 0 }}>
-                <InlineIcon name='account-multiple-outline' color={color} size={24} style={{ width: 26 }} />
-                <ThemedText type="menuDrawer">Acak</ThemedText>
+                <Ionicons name="shuffle-outline" size={24} color={color} style={{ width: 26 }} />
+                <ThemedText type="menuDrawer" style={{ paddingHorizontal: 5 }}>
+                  Acak
+                </ThemedText>
               </ListView>
-            </Collapsible>
+            </CollapsibleMenu>
           </ListView>
         </ThemedView>
 
-        <ThemedView style={{ paddingVertical: 4, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: color }}>
+        <ThemedView style={styles.menuContainerWithBorder}>
           <ListView>
-            <Collapsible title="Jelajah" style={{ marginLeft: 0 }}>
+            <CollapsibleMenu title="Jelajah" style={{ marginLeft: 0 }}>
               <ListView name='/donatur' style={{ paddingHorizontal: 0 }}>
                 <InlineIcon name='clock-outline' color={color} size={20} style={{ width: 26 }} />
                 <ThemedText type="menuDrawer">Donatur</ThemedText>
@@ -102,16 +160,57 @@ export function ThemedDrawer({
                 <InlineIcon name='account-multiple-outline' color={color} size={24} style={{ width: 26 }} />
                 <ThemedText type="menuDrawer">Discord</ThemedText>
               </ListView>
-            </Collapsible>
+            </CollapsibleMenu>
           </ListView>
         </ThemedView>
+
+        <ThemedView style={styles.menuContainer}>
+          <ListView>
+            <ThemedText type="menuDrawerActive" style={{ color: Colors.dark.tint }}>
+              Telusuri
+            </ThemedText>
+          </ListView>
+        </ThemedView>
+
+        {renderMenuTag()}
+
+        <ThemedView style={styles.footerContainer}>
+          <ListView>
+            <ThemedText type="menuDrawerActive" style={{ color: Colors.dark.tint }}>
+              Informasi
+            </ThemedText>
+          </ListView>
+
+          <ThemedView style={styles.footerLinks}>
+            <TouchableOpacity>
+              <ThemedText>Kontak</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ThemedText>Aturan</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ThemedText>Ketentuan</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ThemedText>Kebijakan</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ThemedText>Lahelu+</ThemedText>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ThemedText>Koin</ThemedText>
+            </TouchableOpacity>
+          </ThemedView>
+        </ThemedView>
+
+
       </ThemedScrollView >
     );
   }
 
   const renderDrawerSearch = () => {
     return (
-      <ThemedScrollView showsVerticalScrollIndicator={false} style={styles.content}>
+      <ThemedScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         <ThemedView style={styles.drawerHeaderContainer}>
           <ThemedText type='title'>
             Cari meme
@@ -181,8 +280,45 @@ const styles = StyleSheet.create({
   content: {
     paddingVertical: 10,
   },
-  menu: {
-    paddingHorizontal: 20,
+
+  notLoginContainer: {
+    padding: 16,
+    margin: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.dark.borderGrey
+  },
+  notLoginTitle: {
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  notLoginText: {
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  notLoginButton: {
+    alignSelf: 'center'
+  },
+
+  menuContainer: {
+    paddingVertical: 4
+  },
+  menuContainerWithBorder: {
+    paddingVertical: 4,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: Colors.dark.text,
+    marginTop: 0.5
+  },
+  footerContainer: {
+    paddingVertical: 4,
+    marginVertical: 10
+  },
+  footerLinks: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: 25,
+    gap: 15
   },
 
   drawerHeaderContainer: {
@@ -208,4 +344,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: Colors.dark.inputBackground
   },
+
+  tagMenu: {
+    flex: 1,
+    marginLeft: 7,
+    paddingHorizontal: 5
+  },
+  starContainer: {
+    width: 30,
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    borderRadius: 4,
+    backgroundColor: Colors.dark.background
+  }
 });

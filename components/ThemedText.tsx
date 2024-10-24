@@ -6,7 +6,10 @@ import { Colors } from '@/constants/Colors';
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link' | 'menuDrawer' | 'tab' | 'postUsername' | 'postTime' | 'postTitle' | 'postTag' | 'postCounter' | 'modalTitle' | 'modalText' | 'signInGoogle';
+  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' |
+  'link' | 'menuDrawer' | 'menuDrawerActive' | 'tab' | 'postUsername' | 'postTime' |
+  'postTitle' | 'postTag' | 'postCounter' | 'modalTitle' |
+  'modalText' | 'signInGoogle' | 'logIn';
 };
 
 export function ThemedText({
@@ -27,6 +30,7 @@ export function ThemedText({
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
         type === 'subtitle' ? styles.subtitle : undefined,
         type === 'link' ? styles.link : undefined,
+        type === 'menuDrawerActive' ? styles.menuDrawerActive : undefined,
         type === 'menuDrawer' ? styles.menuDrawer : undefined,
         type === 'tab' ? styles.tab : undefined,
         type === 'postUsername' ? styles.postUsername : undefined,
@@ -37,6 +41,7 @@ export function ThemedText({
         type === 'modalTitle' ? styles.modalTitle : undefined,
         type === 'modalText' ? styles.modalText : undefined,
         type === 'signInGoogle' ? styles.signInGoogle : undefined,
+        type === 'logIn' ? styles.logIn : undefined,
         style,
       ]}
       {...rest}
@@ -67,11 +72,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#0a7ea4',
   },
+  menuDrawerActive: {
+    lineHeight: 30,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   menuDrawer: {
     lineHeight: 30,
     fontSize: 18,
     fontWeight: '400',
-    paddingHorizontal: 5
   },
   tab: {
     fontSize: 16,
@@ -116,5 +125,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
     color: Colors.dark.textTertiary,
+  },
+  logIn: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   }
 });

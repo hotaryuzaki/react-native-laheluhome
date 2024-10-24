@@ -1,4 +1,4 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Button, type ButtonProps } from '@rneui/themed';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -7,11 +7,12 @@ import { Colors } from '@/constants/Colors';
 export type ThemedButtonProps = ButtonProps & {
   lightColor?: string;
   darkColor?: string;
-  name?: 'default' | 'signInGoogle';
+  name?: 'default' | 'signInGoogle' | 'logIn';
 };
 
 export function ThemedButton({
   style,
+  containerStyle,
   lightColor,
   darkColor,
   name,
@@ -29,7 +30,12 @@ export function ThemedButton({
         { backgroundColor },
         styles.default,
         name === 'signInGoogle' ? styles.signInGoogle : undefined,
+        name === 'logIn' ? styles.logIn : undefined,
         style,
+      ]}
+      containerStyle={[
+        name === 'logIn' ? styles.logIn : undefined,
+        containerStyle,
       ]}
       onPress={onPress}
       {...rest}
@@ -50,5 +56,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.dark.borderGrey,
     backgroundColor: Colors.dark.background
+  },
+  logIn: {
+    width: 80,
+    alignSelf: 'center',
+    borderRadius: 50,
   }
 });

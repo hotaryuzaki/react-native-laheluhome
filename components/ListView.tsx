@@ -5,18 +5,20 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 export type ThemedViewProps = ViewProps & {
   name?: string,
+  type?: string,
   lightColor?: string;
   darkColor?: string;
 };
 
-export function ListView({ name, style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
+export function ListView({ name, type, style, lightColor, darkColor, ...otherProps }: ThemedViewProps) {
   const pathname = usePathname();
   const drawerMenuBgSelected = useThemeColor({ light: lightColor, dark: darkColor }, 'drawerMenuBgSelected');
 
   return (
     <View
-      style={
-        [{
+      style={[
+        type === 'single' ? { height: 40 } : undefined,
+        {
           flex: 1,
           flexDirection: 'row',
           alignItems: 'center',
