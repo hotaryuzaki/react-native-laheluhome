@@ -1,18 +1,20 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { Image, type ImageProps } from 'expo-image';
+import Pinchable from 'react-native-pinchable';
 import { Colors } from '@/constants/Colors';
-import { ThemedView } from '@/components/ThemedView';
+
+const width = Dimensions.get('window').width; // SCREEN WIDTH SIZE
 
 export function ImagePost({ source }: ImageProps) {
   return (
-    <ThemedView style={styles.postMediaContainer}>
+    <Pinchable style={styles.postMediaContainer}>
       <Image
         style={styles.postMedia}
         source={source}
         transition={300}
         contentFit='contain'
       />
-    </ThemedView>
+    </Pinchable>
   );
 }
 
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dark.mediaBackground,
   },
   postMedia: {
-    flex: 1,
-    aspectRatio: 1,
+    width: width,
+    height: width
   },
 });

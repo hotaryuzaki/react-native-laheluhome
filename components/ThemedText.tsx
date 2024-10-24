@@ -8,8 +8,8 @@ export type ThemedTextProps = TextProps & {
   darkColor?: string;
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' |
   'link' | 'menuDrawer' | 'menuDrawerActive' | 'tab' | 'postUsername' | 'postTime' |
-  'postTitle' | 'postTag' | 'postCounter' | 'modalTitle' |
-  'modalText' | 'signInGoogle' | 'logIn';
+  'postTitle' | 'postTag' | 'postCounter' | 'modalTitle' | 'menuBottomSheetTitle' | 'menuBottomSheet' | 'menuBottomSheetRed' |
+  'modalText' | 'signInGoogle' | 'logIn' | 'nsfwTitle' | 'nsfwText' | 'nsfwLink';
 };
 
 export function ThemedText({
@@ -42,6 +42,12 @@ export function ThemedText({
         type === 'modalText' ? styles.modalText : undefined,
         type === 'signInGoogle' ? styles.signInGoogle : undefined,
         type === 'logIn' ? styles.logIn : undefined,
+        type === 'menuBottomSheetTitle' ? styles.menuBottomSheetTitle : undefined,
+        type === 'menuBottomSheet' ? styles.menuBottomSheet : undefined,
+        type === 'menuBottomSheetRed' ? styles.menuBottomSheetRed : undefined,
+        type === 'nsfwTitle' ? styles.nsfwTitle : undefined,
+        type === 'nsfwText' ? styles.nsfwText : undefined,
+        type === 'nsfwLink' ? styles.nsfwLink : undefined,
         style,
       ]}
       {...rest}
@@ -120,7 +126,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: Colors.dark.textTertiary,
   },
-
   signInGoogle: {
     fontSize: 13,
     textAlign: 'center',
@@ -130,5 +135,36 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-  }
+  },
+  menuBottomSheetTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  menuBottomSheet: {
+    fontSize: 18,
+    paddingLeft: 10
+  },
+  menuBottomSheetRed: {
+    fontSize: 20,
+    color: Colors.dark.textReport,
+    paddingLeft: 10,
+  },
+  nsfwTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    lineHeight: 50,
+  },
+  nsfwText: {
+    fontSize: 16,
+    color: Colors.dark.textSecondary,
+    textAlign: 'center',
+  },
+  nsfwLink: {
+    fontSize: 16,
+    color: Colors.dark.tint,
+    textAlign: 'center',
+    lineHeight: 50,
+  },
 });

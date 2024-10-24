@@ -3,19 +3,19 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-// const tintColorLight = '#65a4ec';
-const tintColorDark = '#65a4ec';
-const white = '#e4e4e4'; // MAIN COLOR
+// const tintColorLight = '#65A4EC';
+const tintColorDark = '#65A4EC';
+const white = '#E4E4E4'; // MAIN COLOR
 const whiteHighlight = '#ffffff';
-const black = '#1a1a1a'; // MAIN BG COLOR
-const blackHighlight = '#0c0c0c';
+const black = '#1A1A1A'; // MAIN BG COLOR
+const blackHighlight = '#0C0C0C';
 const grey = '#333333';
 const greyLight = '#414141';
 const greyLight2 = '#949494';
-const greyLight3 = '#c0c0c0';
-const orange = '#dd952a';
+const greyLight3 = '#C0C0C0';
+const orange = '#DD952A';
 const blueLight = '#699EDB';
-const blueLight2 = '#4f738b';
+const red = '#E67070';
 
 export const Colors = {
   light: {
@@ -24,6 +24,7 @@ export const Colors = {
     textSecondary: greyLight2,
     textTertiary: greyLight3,
     textHighlight: whiteHighlight,
+    textReport: red,
     background: black,
     border: blackHighlight,
     borderGrey: greyLight,
@@ -48,6 +49,7 @@ export const Colors = {
     textSecondary: greyLight2,
     textTertiary: greyLight3,
     textHighlight: whiteHighlight,
+    textReport: red,
     background: black,
     border: blackHighlight,
     borderGrey: greyLight,

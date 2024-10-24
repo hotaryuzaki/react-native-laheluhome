@@ -81,7 +81,7 @@ export function ThemedDrawer({
               Login dengan Google sekarang! Google sekarang!
             </ThemedText>
 
-            <ThemedButton name='logIn' style={styles.notLoginButton} onPress={() => onPressLogin(true)}>
+            <ThemedButton name='logIn' onPress={() => onPressLogin(true)}>
               <ThemedText type='logIn'>
                 Login
               </ThemedText>
@@ -309,9 +309,6 @@ const styles = StyleSheet.create({
   notLoginText: {
     textAlign: 'center',
     marginBottom: 10
-  },
-  notLoginButton: {
-    alignSelf: 'center'
   },
 
   menuContainer: {

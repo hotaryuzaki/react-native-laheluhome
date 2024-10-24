@@ -10,11 +10,19 @@ import { ActivityIndicator, Dimensions, StyleSheet, TouchableOpacity } from 'rea
 import axios from 'axios';
 import PagerView from 'react-native-pager-view';
 import { FlashList, type ListRenderItem } from "@shopify/flash-list";
-import Modal from "react-native-modal";
 import { Image } from 'expo-image';
+import Modal from "react-native-modal";
+import {
+  BottomSheetBackdrop,
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+  type BottomSheetBackdropProps
+} from "@gorhom/bottom-sheet"
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Feather from '@expo/vector-icons/Feather';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { Constants } from '@/constants/Constants';
@@ -26,6 +34,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedScrollView } from '@/components/ThemedScrollView';
 import { ThemedButton } from '@/components/ThemedButton';
+import { ListView } from '@/components/ListView';
+import { InlineIcon } from '@/components/InlineIcon';
 import { ImageAvatar } from '@/components/ImageAvatar';
 import { ImagePost } from '@/components/ImagePost';
 import { ImageLaheluIcon } from '@/components/ImageLaheluIcon';
@@ -99,7 +109,7 @@ export default function Home() {
   const iconColor = useThemeColor({}, 'icon');
   const loadingIndicatorColor = useThemeColor({}, 'loadingIndicator');
 
-
+  // API REQUEST
   const _getPost = async (): Promise<Post | null> => {
     try {
       switch (tabSelected) {
@@ -272,7 +282,9 @@ export default function Home() {
             </ThemedText>
           </ThemedView>
 
-          <MaterialCommunityIcons name="dots-horizontal" size={20} color={iconColor} />
+          <TouchableOpacity onPress={() => bottomSheetPostRef.current?.present()}>
+            <MaterialCommunityIcons name="dots-horizontal" size={20} color={iconColor} style={styles.postDots} />
+          </TouchableOpacity>
         </ThemedView>
 
         <ThemedView style={styles.postTitleContainer}>
@@ -282,9 +294,33 @@ export default function Home() {
         </ThemedView>
 
         {
-          item.mediaType === 0
-            ? <ImagePost source={item.media} />
-            : <VideoPlayer source={item.media} id={`${item.feed}-${item.postID}`} />
+          item.sensitive
+            ? (
+              <ThemedView style={styles.postMediaContainer}>
+                <ThemedView style={styles.postMedia}>
+                  <ThemedText type='nsfwTitle' style={{ textAlign: 'center' }}>
+                    KONTEN SENSITIF
+                  </ThemedText>
+                  <ThemedText type='nsfwText' style={{ textAlign: 'center' }}>
+                    Post ini mengandung unsur sensitif atau dewasa
+                  </ThemedText>
+                  <ThemedText type='nsfwLink' style={{ textAlign: 'center' }}>
+                    klik untuk ubah pengaturan
+                  </ThemedText>
+
+                  <ThemedButton name='logIn' onPress={() => setModalNotLogin(true)}>
+                    <ThemedText type='logIn'>
+                      Lihat
+                    </ThemedText>
+                  </ThemedButton>
+                </ThemedView>
+              </ThemedView>
+            )
+            : (
+              item.mediaType === 0
+                ? <ImagePost source={item.media} />
+                : <VideoPlayer source={item.media} id={`${item.feed}-${item.postID}`} />
+            )
         }
 
         <ThemedScrollView
@@ -453,139 +489,213 @@ export default function Home() {
 
   };
 
-  return (
-    <ThemedDrawer
-      tabSelected={tabSelected}
-      open={open}
-      setOpen={(value) => setOpen(value)}
-      search={search}
-      setSearch={(value) => setSearch(value)}
-      onPressLogin={(value) => setModalNotLogin(value)}
-      onPressTab={(value) => {
-        setOpen(false);
-        setTabSelected(value);
-      }}
-    >
-      <Header
-        tabList={tabList}
-        tabSelected={tabSelected}
-        setTabSelected={(value) => setTabSelected(value)}
-        onPressMenu={() => setOpen((prevOpen) => !prevOpen)}
-        onPressSearch={() => setSearch((prevOpen) => !prevOpen)}
-        forwardRef={refPagerView}
+  // BOTTOMSHEET VARIABLES
+  const bottomSheetPostRef = useRef<BottomSheetModal>(null);
+  const snapPointsPost = useMemo(() => ["50%", "90%"], []);
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.75}
+        {...props}
       />
+    ),
+    []
+  );
 
-      <PagerView
-        style={{ flex: 1 }}
-        initialPage={0}
-        scrollEnabled={false}
-        ref={refPagerView}
+
+  return (
+    <BottomSheetModalProvider>
+      <ThemedDrawer
+        tabSelected={tabSelected}
+        open={open}
+        setOpen={(value) => setOpen(value)}
+        search={search}
+        setSearch={(value) => setSearch(value)}
+        onPressLogin={(value) => setModalNotLogin(value)}
+        onPressTab={(value) => {
+          setOpen(false);
+          setTabSelected(value);
+        }}
       >
-        <FlashList
-          key="home"
-          keyExtractor={keyExtractor}
-          numColumns={1}
-          data={home}
-          renderItem={renderItem}
-          ListFooterComponent={renderFlatListFooter}
-          estimatedItemSize={width} // SINGLE ITEM POST HEIGHT
-          onEndReached={_handleLoadMore}
-          onEndReachedThreshold={0.3}
-          onMomentumScrollBegin={() =>
-            (onEndReachedCalledDuringMomentum = false)
-          }
-          drawDistance={height * 5}
-          // ref={refFlashList}
-          // onScroll={_handleScroll}
-          // onMomentumScrollEnd={_handleSnap}
-          refreshing={refreshing}
-          onRefresh={_handleRefresh}
+        <Header
+          tabList={tabList}
+          tabSelected={tabSelected}
+          setTabSelected={(value) => setTabSelected(value)}
+          onPressMenu={() => setOpen((prevOpen) => !prevOpen)}
+          onPressSearch={() => setSearch((prevOpen) => !prevOpen)}
+          forwardRef={refPagerView}
         />
 
-        <FlashList
-          key="fresh"
-          keyExtractor={keyExtractor}
-          numColumns={1}
-          data={fresh}
-          renderItem={renderItem}
-          ListFooterComponent={renderFlatListFooter}
-          estimatedItemSize={width} // SINGLE ITEM POST HEIGHT
-          onEndReached={_handleLoadMore}
-          onEndReachedThreshold={0.3}
-          onMomentumScrollBegin={() =>
-            (onEndReachedCalledDuringMomentum = false)
-          }
-          drawDistance={height * 5}
-          // ref={refFlashList}
-          // onScroll={_handleScroll}
-          // onMomentumScrollEnd={_handleSnap}
-          refreshing={refreshing}
-          onRefresh={_handleRefresh}
-        />
+        <PagerView
+          style={{ flex: 1 }}
+          initialPage={0}
+          scrollEnabled={false}
+          ref={refPagerView}
+        >
+          <FlashList
+            key="home"
+            keyExtractor={keyExtractor}
+            numColumns={1}
+            data={home}
+            renderItem={renderItem}
+            ListFooterComponent={renderFlatListFooter}
+            estimatedItemSize={width} // SINGLE ITEM POST HEIGHT
+            onEndReached={_handleLoadMore}
+            onEndReachedThreshold={0.3}
+            onMomentumScrollBegin={() =>
+              (onEndReachedCalledDuringMomentum = false)
+            }
+            drawDistance={height * 5}
+            // ref={refFlashList}
+            // onScroll={_handleScroll}
+            // onMomentumScrollEnd={_handleSnap}
+            refreshing={refreshing}
+            onRefresh={_handleRefresh}
+          />
 
-        <FlashList
-          key="trending"
-          keyExtractor={keyExtractor}
-          numColumns={1}
-          data={trending}
-          renderItem={renderItem}
-          ListFooterComponent={renderFlatListFooter}
-          estimatedItemSize={width} // SINGLE ITEM POST HEIGHT
-          onEndReached={_handleLoadMore}
-          onEndReachedThreshold={0.3}
-          onMomentumScrollBegin={() =>
-            (onEndReachedCalledDuringMomentum = false)
-          }
-          drawDistance={height * 5}
-          // ref={refFlashList}
-          // onScroll={_handleScroll}
-          // onMomentumScrollEnd={_handleSnap}
-          refreshing={refreshing}
-          onRefresh={_handleRefresh}
-        />
-      </PagerView>
+          <FlashList
+            key="fresh"
+            keyExtractor={keyExtractor}
+            numColumns={1}
+            data={fresh}
+            renderItem={renderItem}
+            ListFooterComponent={renderFlatListFooter}
+            estimatedItemSize={width} // SINGLE ITEM POST HEIGHT
+            onEndReached={_handleLoadMore}
+            onEndReachedThreshold={0.3}
+            onMomentumScrollBegin={() =>
+              (onEndReachedCalledDuringMomentum = false)
+            }
+            drawDistance={height * 5}
+            // ref={refFlashList}
+            // onScroll={_handleScroll}
+            // onMomentumScrollEnd={_handleSnap}
+            refreshing={refreshing}
+            onRefresh={_handleRefresh}
+          />
 
-      <Modal
-        isVisible={modalNotLogin}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-        onBackdropPress={() => setModalNotLogin(false)}
-        onBackButtonPress={() => setModalNotLogin(false)}
-        backdropOpacity={0.4}
-        // BELOW ARE FOR ENHANCES PERFORMANCE
-        useNativeDriver={true}
-        useNativeDriverForBackdrop={true}
-        hideModalContentWhileAnimating={true}
-      >
-        <ThemedView style={styles.modalContainer}>
-          <ThemedView style={styles.modalView}>
-            <ImageLaheluIcon source={IconLaheluOnly} />
+          <FlashList
+            key="trending"
+            keyExtractor={keyExtractor}
+            numColumns={1}
+            data={trending}
+            renderItem={renderItem}
+            ListFooterComponent={renderFlatListFooter}
+            estimatedItemSize={width} // SINGLE ITEM POST HEIGHT
+            onEndReached={_handleLoadMore}
+            onEndReachedThreshold={0.3}
+            onMomentumScrollBegin={() =>
+              (onEndReachedCalledDuringMomentum = false)
+            }
+            drawDistance={height * 5}
+            // ref={refFlashList}
+            // onScroll={_handleScroll}
+            // onMomentumScrollEnd={_handleSnap}
+            refreshing={refreshing}
+            onRefresh={_handleRefresh}
+          />
+        </PagerView>
 
-            <ThemedText type='modalTitle' style={styles.modalTitle}>
-              Selamat datang!
-            </ThemedText>
-            <ThemedText type='modalText'>
-              Buat meme, beri vote, dan berkomentar setelah login!
-            </ThemedText>
+        <Modal
+          isVisible={modalNotLogin}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          onBackdropPress={() => setModalNotLogin(false)}
+          onBackButtonPress={() => setModalNotLogin(false)}
+          backdropOpacity={0.4}
+          // BELOW ARE FOR ENHANCES PERFORMANCE
+          useNativeDriver={true}
+          useNativeDriverForBackdrop={true}
+          hideModalContentWhileAnimating={true}
+        >
+          <ThemedView style={styles.modalContainer}>
+            <ThemedView style={styles.modalView}>
+              <ImageLaheluIcon source={IconLaheluOnly} />
 
-            <ThemedButton
-              name='signInGoogle'
-              style={{ marginTop: 20 }}
-              onPress={() => setModalNotLogin(!modalNotLogin)}
-            >
-              <Image
-                style={styles.imageGoogle}
-                source={GoogleLogo}
-                contentFit='contain'
-              />
-              <ThemedText type='signInGoogle'>
-                Sign in dengan Google
+              <ThemedText type='modalTitle' style={styles.modalTitle}>
+                Selamat datang!
               </ThemedText>
-            </ThemedButton>
+              <ThemedText type='modalText'>
+                Buat meme, beri vote, dan berkomentar setelah login!
+              </ThemedText>
+
+              <ThemedButton
+                name='signInGoogle'
+                style={{ marginTop: 20 }}
+                onPress={() => setModalNotLogin(!modalNotLogin)}
+              >
+                <Image
+                  style={styles.imageGoogle}
+                  source={GoogleLogo}
+                  contentFit='contain'
+                />
+                <ThemedText type='signInGoogle'>
+                  Sign in dengan Google
+                </ThemedText>
+              </ThemedButton>
+            </ThemedView>
           </ThemedView>
-        </ThemedView>
-      </Modal>
-    </ThemedDrawer >
+        </Modal>
+
+
+        <BottomSheetModal
+          key="post"
+          ref={bottomSheetPostRef}
+          index={0}
+          snapPoints={snapPointsPost}
+          backdropComponent={renderBackdrop}
+          backgroundStyle={styles.bottomSheetBackground}
+          handleIndicatorStyle={styles.bottomSheetIndicator}
+          stackBehavior='switch'
+        >
+          <BottomSheetScrollView>
+            <ThemedView style={{ flex: 1, marginBottom: 10 }}>
+              <ListView type='single' style={styles.bottomSheetHeader}>
+                <ThemedView style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <ThemedText type='menuBottomSheetTitle'>
+                    Pilihan
+                  </ThemedText>
+
+                  <TouchableOpacity onPress={() => bottomSheetPostRef.current?.dismiss()}>
+                    <MaterialCommunityIcons name="close" size={24} color={iconColor} />
+                  </TouchableOpacity>
+                </ThemedView>
+              </ListView>
+
+              <ListView type='single'>
+                <InlineIcon name="image-multiple-outline" size={18} color={iconColor} style={{ width: 26 }} />
+                <ThemedText type="menuBottomSheet" style={{ paddingHorizontal: 5 }}>
+                  Simpan ke album
+                </ThemedText>
+              </ListView>
+
+              <ListView type='single'>
+                <Feather name="download" size={20} color={iconColor} style={{ width: 26 }} />
+                <ThemedText type="menuBottomSheet" style={{ paddingHorizontal: 5 }}>
+                  Download
+                </ThemedText>
+              </ListView>
+
+              <ListView type='single'>
+                <InlineIcon name="image-multiple-outline" size={18} color={iconColor} style={{ width: 26 }} />
+                <ThemedText type="menuBottomSheet" style={{ paddingHorizontal: 5 }}>
+                  Tidak suka
+                </ThemedText>
+              </ListView>
+
+              <ListView type='single'>
+                <MaterialCommunityIcons name="flag-outline" size={22} color={Colors.dark.textReport} style={{ width: 26 }} />
+                <ThemedText type="menuBottomSheetRed" style={{ paddingHorizontal: 5 }}>
+                  Report
+                </ThemedText>
+              </ListView>
+            </ThemedView>
+          </BottomSheetScrollView>
+        </BottomSheetModal>
+      </ThemedDrawer >
+    </BottomSheetModalProvider >
   );
 }
 
@@ -614,11 +724,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     overflow: 'hidden',
   },
+  postDots: {
+    width: 30,
+    aspectRatio: 1,
+    alignSelf: 'center',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+  },
   postTitleContainer: {
     flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 16,
     paddingVertical: 10,
+  },
+  postMediaContainer: {
+    flex: 1,
+  },
+  postMedia: {
+    width: width,
+    height: width,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.dark.mediaBackground,
   },
   postTagContainer: {
     flex: 1,
@@ -694,5 +821,19 @@ const styles = StyleSheet.create({
     width: 24,
     aspectRatio: 1,
     marginRight: 10
+  },
+
+  bottomSheetBackground: {
+    backgroundColor: Colors.dark.background
+  },
+  bottomSheetIndicator: {
+    backgroundColor: Colors.dark.tint
+  },
+  bottomSheetHeader: {
+    flex: 1,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.dark.borderGrey,
+    paddingTop: 0,
+    marginBottom: 1,
   }
 });
