@@ -18,11 +18,12 @@ import { InlineIcon } from '@/components/InlineIcon';
 import { ImageTagSmall } from '@/components/ImageTagSmall';
 
 export type ThemedDrawerProps = {
-  tab?: string;
   tabSelected?: string;
   open: boolean;
   setOpen: (open: boolean) => void;
   search: boolean;
+  lightColor?: string,
+  darkColor?: string,
   setSearch: (search: boolean) => void,
   onPressLogin: (show: boolean) => void,
   onPressTab: (tab: string) => void,
@@ -31,7 +32,6 @@ export type ThemedDrawerProps = {
 
 export function ThemedDrawer({
   children,
-  tab,
   tabSelected,
   open,
   search,
@@ -216,8 +216,6 @@ export function ThemedDrawer({
             </TouchableOpacity>
           </ThemedView>
         </ThemedView>
-
-
       </ThemedScrollView >
     );
   }
@@ -348,7 +346,8 @@ const styles = StyleSheet.create({
     color: Colors.dark.text,
     fontSize: 17,
     alignItems: 'center',
-    margin: 12,
+    marginHorizontal: 16,
+    marginVertical: 12,
     padding: 12,
     borderColor: Colors.dark.inputBorder,
     borderRadius: 8,

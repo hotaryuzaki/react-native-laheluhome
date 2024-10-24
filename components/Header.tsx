@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import { ReactElement, ReactNode, useCallback, useRef, useState } from "react";
-import { Animated, StyleSheet, TouchableOpacity, useColorScheme, type TransformsStyle, type ViewProps } from 'react-native';
+import { ReactElement, ReactNode, useCallback } from "react";
+import { Animated, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -18,8 +18,7 @@ export type HeaderProps = {
   tabSelected: string,
   setTabSelected: (tab: string) => void,
   onPressMenu?: (open: boolean) => void,
-  onPressSearch?: (open: boolean) => void,
-  translateY?: TransformsStyle
+  onPressSearch?: (open: boolean) => void
 };
 
 
@@ -28,10 +27,9 @@ export function Header({
   tabSelected,
   setTabSelected,
   onPressMenu = () => { },
-  onPressSearch = () => { },
-  translateY
+  onPressSearch = () => { }
 }: HeaderProps) {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? 'dark';
 
@@ -62,8 +60,7 @@ export function Header({
         height: insets.top + (49 + 39),
         paddingTop: insets.top,
         // transform: [{ translateY }],
-        backgroundColor: Colors.dark.background,
-        transition: "background-color 0.5s ease",
+        backgroundColor: Colors.dark.background
       }}
     >
       <ThemedView

@@ -104,7 +104,7 @@ export default function Home() {
 
   const isMounted = useRef<boolean>(true); // REF TO TRACK MOUNTED STATUS
   const refPagerView = useRef<PagerView | null>(null); // PAGERVIEW REF
-  const refFlashList = useRef<FlashList<unknown> | null>(null); // FLASHLIST REF
+  // const refFlashList = useRef<FlashList<unknown> | null>(null); // FLASHLIST REF
 
   const iconColor = useThemeColor({}, 'icon');
   const loadingIndicatorColor = useThemeColor({}, 'loadingIndicator');
@@ -480,13 +480,10 @@ export default function Home() {
       setTrendingPagination({});
       setTrendingPage(0);
     }
-    // setLoadingMoreIndicator(true);
-    // setLoadingMore(true);
 
     setTimeout(() => {
       _getPost();
     }, 200);
-
   };
 
   // BOTTOMSHEET VARIABLES
@@ -525,7 +522,6 @@ export default function Home() {
           setTabSelected={(value) => setTabSelected(value)}
           onPressMenu={() => setOpen((prevOpen) => !prevOpen)}
           onPressSearch={() => setSearch((prevOpen) => !prevOpen)}
-          forwardRef={refPagerView}
         />
 
         <PagerView
@@ -548,6 +544,7 @@ export default function Home() {
               (onEndReachedCalledDuringMomentum = false)
             }
             drawDistance={height * 5}
+            scrollEventThrottle={16}
             // ref={refFlashList}
             // onScroll={_handleScroll}
             // onMomentumScrollEnd={_handleSnap}
@@ -569,6 +566,7 @@ export default function Home() {
               (onEndReachedCalledDuringMomentum = false)
             }
             drawDistance={height * 5}
+            scrollEventThrottle={16}
             // ref={refFlashList}
             // onScroll={_handleScroll}
             // onMomentumScrollEnd={_handleSnap}
@@ -590,6 +588,7 @@ export default function Home() {
               (onEndReachedCalledDuringMomentum = false)
             }
             drawDistance={height * 5}
+            scrollEventThrottle={16}
             // ref={refFlashList}
             // onScroll={_handleScroll}
             // onMomentumScrollEnd={_handleSnap}
@@ -638,7 +637,6 @@ export default function Home() {
             </ThemedView>
           </ThemedView>
         </Modal>
-
 
         <BottomSheetModal
           key="post"
