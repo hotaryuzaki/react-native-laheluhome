@@ -630,7 +630,7 @@ export default function Home() {
 
               <ThemedButton
                 name='signInGoogle'
-                style={{ marginTop: 20 }}
+                style={styles.modalButton}
                 onPress={() => setModalNotLogin(!modalNotLogin)}
               >
                 <Image
@@ -708,30 +708,25 @@ export default function Home() {
 const styles = StyleSheet.create({
   postContainer: {
     width: '100%',
-    paddingVertical: 16,
+    paddingVertical: Constants.spacingMD2,
     borderBottomColor: Colors.dark.border,
-    borderBottomWidth: 4,
+    borderBottomWidth: Constants.postSeparatorHeight,
   },
   postHeaderContainer: {
     flex: 1,
     flexDirection: 'row',
-    height: 30,
+    height: Constants.postHeaderHeight,
     alignItems: 'center',
-    paddingHorizontal: 16,
-  },
-  postHeaderAvatar: {
-    width: 30,
-    aspectRatio: 1,
-    borderRadius: 50,
+    paddingHorizontal: Constants.spacingMD2,
   },
   postUsernameContainer: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 7,
+    paddingHorizontal: Constants.spacingSM,
     overflow: 'hidden',
   },
   postDots: {
-    width: 30,
+    width: Constants.postHeaderHeight,
     aspectRatio: 1,
     alignSelf: 'center',
     textAlign: 'center',
@@ -740,8 +735,8 @@ const styles = StyleSheet.create({
   postTitleContainer: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: Constants.spacingMD2,
+    paddingVertical: Constants.spacingSM2,
   },
   postMediaContainer: {
     flex: 1,
@@ -756,37 +751,39 @@ const styles = StyleSheet.create({
   postTagContainer: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: Constants.spacingMD2,
+    paddingVertical: Constants.spacingSM3,
     gap: 8,
   },
   postTagSpace: {
-    width: 16 * 2 // the value based on padding left & right in postTagContainer
+    width: Constants.spacingMD2 * 2 // the value based on padding left & right in postTagContainer
   },
   postPillContainer: {
-    height: 24,
+    height: Constants.postPillHeight,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 8,
+    paddingHorizontal: Constants.spacingSM,
+    marginLeft: Constants.spacingSM,
     borderWidth: 1,
-    borderRadius: 999,
+    borderRadius: Constants.borderRadiusMax,
     borderColor: Colors.dark.borderGrey,
   },
   postPillSawer: {
+    marginLeft: 0,
     backgroundColor: Colors.dark.sawerBackground,
   },
   postSocialContainer: {
     flex: 1,
     flexDirection: 'row',
-    paddingHorizontal: 16,
+    paddingHorizontal: Constants.spacingMD2,
   },
   postBoxContainer: {
-    height: 38,
+    height: Constants.postBoxHeight,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: Constants.spacingSM3,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: Constants.borderRadiusMD,
     borderColor: Colors.dark.borderGrey,
   },
   postBoxContent: {
@@ -796,7 +793,7 @@ const styles = StyleSheet.create({
   postBoxSeparator: {
     width: 1,
     height: '100%',
-    marginHorizontal: 12,
+    marginHorizontal: Constants.spacingSM3,
     backgroundColor: Colors.dark.borderGrey,
   },
   postBoxSpace: {
@@ -809,24 +806,22 @@ const styles = StyleSheet.create({
   },
   modalView: {
     alignItems: 'center',
-    borderRadius: 8,
-    padding: 16,
+    borderRadius: Constants.borderRadiusMD,
+    padding: Constants.spacingMD2,
     elevation: 10,
     backgroundColor: Colors.dark.background,
   },
   modalTitle: {
-    lineHeight: 50
+    lineHeight: Constants.lineHeightMD
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+  modalButton: {
+    marginTop: Constants.spacingLG,
   },
 
   imageGoogle: {
-    width: 24,
+    width: Constants.iconMD2,
     aspectRatio: 1,
-    marginRight: 10
+    marginRight: Constants.spacingSM2,
   },
 
   bottomSheetBackground: {
@@ -840,6 +835,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: Colors.dark.borderGrey,
     paddingTop: 0,
-    marginBottom: 1,
+    marginBottom: Constants.spacingXS,
   }
 });

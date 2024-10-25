@@ -1,10 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
+import { TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
+
+import styles from './style';
 
 export function Collapsible({ children, title, style }: ViewProps & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +15,7 @@ export function Collapsible({ children, title, style }: ViewProps & { title: str
   return (
     <ThemedView>
       <TouchableOpacity
-        style={styles.heading}
+        style={styles.headingCollapsible}
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}
       >
@@ -26,19 +28,8 @@ export function Collapsible({ children, title, style }: ViewProps & { title: str
         />
       </TouchableOpacity>
 
-      {isOpen && <ThemedView style={[{ ...styles.content }, style]}>{children}</ThemedView>}
+      {isOpen && <ThemedView style={[{ ...styles.contentCollapsible }, style]}>{children}</ThemedView>}
     </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
-  heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  content: {
-    marginTop: 6,
-    marginLeft: 24,
-  },
-});

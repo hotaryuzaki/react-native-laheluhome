@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, type ViewProps } from 'react-native';
+import { TextInput, TouchableOpacity, type ViewProps } from 'react-native';
 import { Drawer } from 'react-native-drawer-layout';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -16,6 +16,8 @@ import { ListView } from '@/components/ListView';
 import { CollapsibleMenu } from '@/components/CollapsibleMenu';
 import { InlineIcon } from '@/components/InlineIcon';
 import { ImageTagSmall } from '@/components/ImageTagSmall';
+
+import styles from './style';
 
 export type ThemedDrawerProps = {
   tabSelected?: string;
@@ -70,7 +72,7 @@ export function ThemedDrawer({
 
   const renderDrawerMenu = () => {
     return (
-      <ThemedScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+      <ThemedScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentThemedDrawer}>
         <ThemedView>
           <ThemedView style={styles.notLoginContainer}>
             <ThemedText type='subtitle' style={styles.notLoginTitle}>
@@ -222,7 +224,7 @@ export function ThemedDrawer({
 
   const renderDrawerSearch = () => {
     return (
-      <ThemedScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+      <ThemedScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentThemedDrawer}>
         <ThemedView style={styles.drawerHeaderContainer}>
           <ThemedText type='title'>
             Cari meme
@@ -258,7 +260,7 @@ export function ThemedDrawer({
       onClose={() => setOpen(false)}
       renderDrawerContent={renderDrawerMenu}
       drawerStyle={{
-        ...styles.container,
+        ...styles.containerThemedDrawer,
         paddingTop: insets.top,
         backgroundColor
       }}
@@ -270,7 +272,7 @@ export function ThemedDrawer({
         onClose={() => setSearch(false)}
         renderDrawerContent={renderDrawerSearch}
         drawerStyle={{
-          ...styles.container,
+          ...styles.containerThemedDrawer,
           width: '100%',
           paddingTop: insets.top,
           backgroundColor
@@ -282,91 +284,3 @@ export function ThemedDrawer({
     </Drawer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '70%',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  content: {
-    paddingVertical: 10,
-  },
-
-  notLoginContainer: {
-    padding: 16,
-    margin: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.dark.borderGrey
-  },
-  notLoginTitle: {
-    textAlign: 'center',
-    marginBottom: 10
-  },
-  notLoginText: {
-    textAlign: 'center',
-    marginBottom: 10
-  },
-
-  menuContainer: {
-    paddingVertical: 4
-  },
-  menuContainerWithBorder: {
-    paddingVertical: 4,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: Colors.dark.text,
-    marginTop: 0.5
-  },
-  footerContainer: {
-    paddingVertical: 4,
-    marginVertical: 10
-  },
-  footerLinks: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 25,
-    gap: 15
-  },
-
-  drawerHeaderContainer: {
-    height: 57,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: Colors.dark.text,
-  },
-  input: {
-    height: 40,
-    color: Colors.dark.text,
-    fontSize: 17,
-    alignItems: 'center',
-    marginHorizontal: 16,
-    marginVertical: 12,
-    padding: 12,
-    borderColor: Colors.dark.inputBorder,
-    borderRadius: 8,
-    borderWidth: 1,
-    backgroundColor: Colors.dark.inputBackground
-  },
-
-  tagMenu: {
-    flex: 1,
-    marginLeft: 7,
-    paddingHorizontal: 5
-  },
-  starContainer: {
-    width: 30,
-    aspectRatio: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'flex-end',
-    borderRadius: 4,
-    backgroundColor: Colors.dark.background
-  }
-});

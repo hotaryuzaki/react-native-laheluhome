@@ -1,19 +1,21 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useState } from 'react';
-import { StyleSheet, TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
+import { TouchableOpacity, useColorScheme, type ViewProps } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
+
+import styles from './style';
 
 export function CollapsibleMenu({ children, title, style }: ViewProps & { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useColorScheme() ?? 'dark';
 
   return (
-    <ThemedView style={styles.collapsibleContainer}>
+    <ThemedView style={styles.containerCollapsibleMenu}>
       <TouchableOpacity
-        style={styles.heading}
+        style={styles.headingCollapsibleMenu}
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}
       >
@@ -26,25 +28,7 @@ export function CollapsibleMenu({ children, title, style }: ViewProps & { title:
         />
       </TouchableOpacity>
 
-      {isOpen && <ThemedView style={[{ ...styles.content }, style]}>{children}</ThemedView>}
+      {isOpen && <ThemedView style={[{ ...styles.contentCollapsibleMenu }, style]}>{children}</ThemedView>}
     </ThemedView>
   );
 }
-
-const styles = StyleSheet.create({
-  collapsibleContainer: {
-    flex: 1,
-    borderBottomColor: 'white'
-  },
-  heading: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 6,
-  },
-  content: {
-    marginTop: 6,
-    marginLeft: 24,
-  },
-});

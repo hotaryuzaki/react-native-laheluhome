@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { ReactElement, ReactNode, useCallback } from "react";
-import { Animated, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import { Animated, TouchableOpacity, useColorScheme } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -10,6 +10,8 @@ import { Constants } from '@/constants/Constants';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
+
+import styles from './style';
 
 const IconLahelu = require('@/assets/images/lahelu-icon.png');
 
@@ -57,7 +59,7 @@ export function Header({
   return (
     <Animated.View
       style={{
-        height: insets.top + (49 + 39),
+        height: insets.top + (Constants.headerHeight + Constants.tabHeight),
         paddingTop: insets.top,
         // transform: [{ translateY }],
         backgroundColor: Colors.dark.background
@@ -87,7 +89,7 @@ export function Header({
 
         <ThemedView style={{ flex: 1 }}>
           <Image
-            style={styles.icon}
+            style={styles.iconLahelu}
             source={IconLahelu}
           />
         </ThemedView>
@@ -117,49 +119,3 @@ export function Header({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    position: "absolute",
-    height: 49,
-    left: 0,
-    right: 0,
-    width: "100%",
-    zIndex: 1,
-  },
-  touch: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  content: {
-    marginTop: 6,
-    marginLeft: 24,
-  },
-  icon: {
-    height: 25,
-    width: 94
-  },
-  tabContainer: {
-    flex: 1,
-    justifyContent: 'space-evenly',
-    textAlign: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.dark.border
-  },
-  tabContainerActive: {
-    flex: 1,
-    justifyContent: 'space-evenly',
-    textAlign: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.dark.tabIconSelected,
-  },
-  tabText: {
-    color: Colors.dark.text,
-    fontWeight: 'bold'
-  },
-  tabTextActive: {
-    color: Colors.dark.tabIconSelected,
-    fontWeight: 'bold'
-  }
-});

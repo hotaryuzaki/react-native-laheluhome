@@ -1,15 +1,12 @@
-import { Dimensions, StyleSheet } from 'react-native';
 import { Image, type ImageProps } from 'expo-image';
 import Pinchable from 'react-native-pinchable';
-import { Colors } from '@/constants/Colors';
-
-const width = Dimensions.get('window').width; // SCREEN WIDTH SIZE
+import styles from './style';
 
 export function ImagePost({ source }: ImageProps) {
   return (
-    <Pinchable style={styles.postMediaContainer}>
+    <Pinchable style={styles.postImageContainer}>
       <Image
-        style={styles.postMedia}
+        style={styles.postImage}
         source={source}
         transition={300}
         contentFit='contain'
@@ -17,14 +14,3 @@ export function ImagePost({ source }: ImageProps) {
     </Pinchable>
   );
 }
-
-const styles = StyleSheet.create({
-  postMediaContainer: {
-    flex: 1,
-    backgroundColor: Colors.dark.mediaBackground,
-  },
-  postMedia: {
-    width: width,
-    height: width
-  },
-});

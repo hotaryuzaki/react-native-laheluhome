@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
 import { Image, type ImageProps } from 'expo-image';
 import { Constants } from '@/constants/Constants';
+import styles from './style';
 
 export function ImageAvatar({ source }: ImageProps) {
   return (
@@ -12,11 +12,3 @@ export function ImageAvatar({ source }: ImageProps) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  postHeaderAvatar: {
-    width: 30,
-    aspectRatio: 1,
-    borderRadius: 50,
-  },
-});

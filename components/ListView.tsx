@@ -1,7 +1,7 @@
 import { View, type ViewProps } from 'react-native';
 import { usePathname } from 'expo-router';
-
 import { useThemeColor } from '@/hooks/useThemeColor';
+import styles from './style';
 
 export type ThemedViewProps = ViewProps & {
   name?: string,
@@ -36,15 +36,10 @@ export function ListView({ name, tab, tabSelected, type, style, lightColor, dark
     <View
       style={[
         type === 'single' ? { height: 40 } : undefined,
-        {
-          flex: 1,
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: backgroundColor(),
-          paddingHorizontal: 20,
-          paddingVertical: 5
-        }, style]
-      }
+        { backgroundColor: backgroundColor() },
+        styles.listView,
+        style,
+      ]}
       {...otherProps}
     />
   );

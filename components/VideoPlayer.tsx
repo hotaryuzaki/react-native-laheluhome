@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, TouchableOpacity, View } from 'react-native';
 import { Video, type VideoNativeProps, type VideoRef } from "react-native-video";
 import { Slider } from '@rneui/themed';
 import InViewPort from 'react-native-inviewport';
@@ -12,7 +12,7 @@ import { Functions } from '@/constants/Functions';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 
-const width = Dimensions.get('window').width; // SCREEN WIDTH SIZE
+import styles from './style';
 
 export type VideoPlayerProps = VideoNativeProps & {
   id: string,
@@ -85,17 +85,17 @@ export function VideoPlayer({ id, source, thumbnail, autoplay = false }: VideoPl
   return (
     <InViewPort
       key={id}
-      style={styles.postMediaContainer}
+      style={styles.postVideoContainer}
       onChange={(isVisible: boolean) => inViewPort(isVisible)}
       delay={100}
       viewScreen={40}
     >
-      <ThemedView key={id} style={styles.postMediaContainer}>
+      <ThemedView key={id} style={styles.postVideoContainer}>
         <Video
           ref={videoRef}
           source={{ uri: source }}
           resizeMode="contain"
-          style={styles.postMedia}
+          style={styles.postVideo}
           paused={paused}
           onProgress={onProgress}
           onLoad={(data) => setDuration(data.duration)}
@@ -158,69 +158,3 @@ export function VideoPlayer({ id, source, thumbnail, autoplay = false }: VideoPl
     </InViewPort>
   );
 }
-
-const styles = StyleSheet.create({
-  postMediaContainer: {
-    width: width,
-    aspectRatio: 1,
-    backgroundColor: Colors.dark.mediaBackground,
-  },
-  postMedia: {
-    flex: 1,
-  },
-  buttonPlayContainer: {
-    position: 'absolute',
-    width: '100%',
-    aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonPlayCircle: {
-    position: 'absolute',
-    width: 50,
-    aspectRatio: 1,
-    borderRadius: 50,
-    opacity: 0.8,
-    backgroundColor: Colors.dark.background,
-  },
-  buttonMuteContainer: {
-    position: 'absolute',
-    width: 30,
-    aspectRatio: 1,
-    bottom: 16,
-    right: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    opacity: 0.8,
-  },
-  buttonMuteCircle: {
-    position: 'absolute',
-    width: 30,
-    aspectRatio: 1,
-    borderRadius: 50,
-    opacity: 0.5,
-    backgroundColor: Colors.dark.background,
-  },
-  durationContainer: {
-    display: 'none',
-    position: 'absolute',
-    flex: 1,
-    bottom: 28,
-    alignSelf: 'center',
-  },
-  slider: {
-    position: 'absolute',
-    width: '100%',
-    height: 4,
-    bottom: 0,
-  },
-  trackStyle: {
-    height: 4,
-    borderRadius: 0,
-  },
-  thumbStyle: {
-    width: 16,
-    height: 16,
-    backgroundColor: Colors.dark.mediaTimeIndicatorProgress
-  },
-});

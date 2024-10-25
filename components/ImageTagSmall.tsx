@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
 import { Image, type ImageProps } from 'expo-image';
 import { Constants } from '@/constants/Constants';
+import styles from './style';
 
 export function ImageTagSmall({ source }: ImageProps) {
   return (
@@ -12,11 +12,3 @@ export function ImageTagSmall({ source }: ImageProps) {
     />
   );
 }
-
-const styles = StyleSheet.create({
-  imageTagSmall: {
-    width: 24,
-    aspectRatio: 1,
-    borderRadius: 4,
-  },
-});
